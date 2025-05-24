@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from '../../lib/axios.ts';
 
 interface Service {
@@ -23,11 +24,10 @@ interface Service {
 }
 
 const services = ref<Service[]>([]);
-
+const router = useRouter();
 const fetchServices = async () => {
     try {
-        const response = await axios.get('/services');
-        console.info('data', response);
+        const response = await axios.get('/api/services');
         services.value = response.data;
     } catch (error) {
         console.error('Failed to fetch services:', error);
@@ -36,10 +36,9 @@ const fetchServices = async () => {
 
 const deleteService = async (id: number) => {
     if (!confirm('Are you sure you want to delete this service?')) return;
-
     try {
         await axios.delete(`/api/services/${id}`);
-        services.value = services.value.filter((service) => service.id !== id);
+        await fetchServices();
     } catch (error) {
         console.error('Failed to delete service:', error);
     }
