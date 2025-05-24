@@ -30,13 +30,13 @@ class ServiceController extends Controller
         $request->validate(['name' => 'required']);
         $service->update($request->only('name'));
 
-        return redirect()->route('services.index');
+        return response()->json($service, 201);
     }
 
     public function destroy(Service $service)
     {
         $service->delete();
 
-        return response()->json(null, 204); // 204 No Content
+        return response()->json(null, 204);
     }
 }
