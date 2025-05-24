@@ -1,13 +1,8 @@
 <template>
   <div class="max-w-md mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Register</h1>
+    <h1 class="text-2xl font-bold mb-4">Login</h1>
 
-    <form @submit.prevent="register">
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Name</label>
-        <input v-model="form.name" type="text" class="w-full px-3 py-2 border rounded" />
-      </div>
-
+    <form @submit.prevent="login">
       <div class="mb-4">
         <label class="block text-sm font-medium">Email</label>
         <input v-model="form.email" type="email" class="w-full px-3 py-2 border rounded" />
@@ -16,15 +11,6 @@
       <div class="mb-4">
         <label class="block text-sm font-medium">Password</label>
         <input v-model="form.password" type="password" class="w-full px-3 py-2 border rounded" />
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Confirm Password</label>
-        <input
-          v-model="form.password_confirmation"
-          type="password"
-          class="w-full px-3 py-2 border rounded"
-        />
       </div>
 
       <div v-if="errors.length" class="mb-4 text-red-600 text-sm">
@@ -38,7 +24,7 @@
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
         :disabled="loading"
       >
-        {{ loading ? 'Registering...' : 'Register' }}
+        {{ loading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
   </div>
@@ -49,29 +35,29 @@ import { ref } from 'vue'
 import axios from 'axios'
 
 const form = ref({
-  name: '',
   email: '',
   password: '',
-  password_confirmation: '',
 })
 
 const errors = ref([])
 const loading = ref(false)
 
-const register = async () => {
+const login = async () => {
   errors.value = []
   loading.value = true
 
   try {
-    await axios
-      .get('sanctum/csrf-cookie')
-      .then(async () => await axios.post('/register', form.value))
-    //TODO: switch user feedback with toast messages
-    alert('Registration successful!')
+    await axios.get('sanctum/csrf-cookie').then(async () => await axios.post('/login', form.value))
+
+    // On success, redirect or emit event
+    alert('Login successful!')
+    // Example: router.push('/dashboard')
   } catch (error) {
     if (error.response && error.response.data.errors) {
       const serverErrors = error.response.data.errors
       errors.value = Object.values(serverErrors).flat()
+    } else if (error.response && error.response.data.message) {
+      errors.value = [error.response.data.message]
     } else {
       errors.value = ['An unexpected error occurred.']
     }
