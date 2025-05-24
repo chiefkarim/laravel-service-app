@@ -20,9 +20,9 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $request->validate(['name' => 'required']);
-        Service::create($request->only('name'));
+        $service = Service::create($request->only('name'));
 
-        return redirect()->route('services.index');
+        return response()->json($service, 201);
     }
 
     public function update(Request $request, Service $service)
@@ -37,6 +37,6 @@ class ServiceController extends Controller
     {
         $service->delete();
 
-        return redirect()->route('services.index');
+        return response()->json(null, 204); // 204 No Content
     }
 }
