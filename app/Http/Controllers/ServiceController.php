@@ -10,9 +10,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Services/Index', [
-            'services' => Service::all(),
-        ]);
+        return Service::all();
     }
 
     public function create()
