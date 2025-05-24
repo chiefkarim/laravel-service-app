@@ -2,63 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 
 class ServiceRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return ServiceRequest::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(ServiceRequest $serviceRequest)
     {
-        //
+        return $serviceRequest;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'fullname' => 'required|string',
+            'email' => 'required|email',
+            'service_id' => 'required|exists:services,id',
+            'details' => 'required|string',
+        ]);
+
+        ServiceRequest::create($request->only([
+            'fullname',
+            'email',
+            'service_id',
+            'details',
+        ]));
+
+        return redirect()->route('service-requests.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, ServiceRequest $serviceRequest)
     {
-        //
+        $request->validate([
+            'fullname' => 'required|string',
+            'email' => 'required|email',
+            'service_id' => 'required|exists:services,id',
+            'details' => 'required|string',
+            'status' => 'nullable|in:pending,approved,rejected',
+            'reply' => 'nullable|string',
+        ]);
+
+        $serviceRequest->update($request->only([
+            'fullname',
+            'email',
+            'service_id',
+            'details',
+            'status',
+            'reply',
+        ]));
+
+        return redirect()->route('service-requests.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(ServiceRequest $serviceRequest)
     {
-        //
-    }
+        $serviceRequest->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('service-requests.index');
     }
 }

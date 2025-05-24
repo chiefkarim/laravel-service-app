@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
@@ -13,9 +12,9 @@ class ServiceController extends Controller
         return Service::all();
     }
 
-    public function create()
+    public function show(Service $service)
     {
-        return Inertia::render('Services/Create');
+        return $service;
     }
 
     public function store(Request $request)
@@ -24,13 +23,6 @@ class ServiceController extends Controller
         Service::create($request->only('name'));
 
         return redirect()->route('services.index');
-    }
-
-    public function edit(Service $service)
-    {
-        return Inertia::render('Services/Edit', [
-            'service' => $service,
-        ]);
     }
 
     public function update(Request $request, Service $service)
