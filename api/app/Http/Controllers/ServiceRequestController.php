@@ -14,7 +14,7 @@ class ServiceRequestController extends Controller
     {
 
         $user = FacadesAuth::user();
-        if (Gate::allow('service-request-update')) {
+        if (Gate::allows('service-request-update')) {
 
             return ServiceRequest::with(['user', 'service'])->get();
 
@@ -26,7 +26,7 @@ class ServiceRequestController extends Controller
 
     public function show(ServiceRequest $serviceRequest)
     {
-        gate::authorize('access-service-request', $serviceRequest);
+        Gate::authorize('access-service-request', $serviceRequest);
 
         return $serviceRequest->load(['user', 'service']);
 
@@ -77,7 +77,7 @@ class ServiceRequestController extends Controller
     public function destroy(ServiceRequest $serviceRequest)
     {
 
-        gate::authorize('access-service-request', $serviceRequest);
+        Gate::authorize('access-service-request', $serviceRequest);
         $serviceRequest->delete();
 
         return response()->json(null, 204);
