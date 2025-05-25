@@ -21,7 +21,6 @@ const userStore = useUserStore()
 axios
   .get('/api/user')
   .then((res) => {
-    console.info('user in main', res)
     userStore.setUser({ id: res.data.id, role: res.data.role, email: res.data.email })
   })
   .catch((err) => {

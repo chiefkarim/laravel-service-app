@@ -27,10 +27,11 @@ const logout = async () => {
       <HelloWorld msg="You did it!" />
 
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/services">Services</RouterLink>
+        <RouterLink to="/service-requests">Service Requests</RouterLink>
+        <RouterLink to="/">Make Request</RouterLink>
 
-        <template v-if="user">
+        <template v-if="user.email">
           <span class="user-email">{{ user.email }}</span>
           <button @click="logout" class="auth-button text-black">Logout</button>
         </template>
