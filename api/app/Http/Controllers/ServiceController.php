@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Gate;
 
 class ServiceController extends Controller
 {
-    //
     public function index()
     {
-        Gate::authorize('manage-services');
 
         return Service::all();
     }

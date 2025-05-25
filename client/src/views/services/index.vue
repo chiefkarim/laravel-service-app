@@ -2,7 +2,7 @@
   <div class="max-w-md mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Available Services</h1>
 
-    <div v-if="!loading && services.length > 0" class="mb-4">
+    <div v-if="!loading && services.length > 0 && canManage" class="mb-4">
       <RouterLink
         to="/services/create"
         class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -26,7 +26,7 @@
         class="px-4 py-2 border rounded flex justify-between items-center"
       >
         <span>{{ service.name }}</span>
-        <div class="flex space-x-2">
+        <div v-if="canManage" class="flex space-x-2">
           <RouterLink
             :to="`/services/${service.id}/edit`"
             class="text-blue-600 hover:underline text-sm"
@@ -51,6 +51,16 @@ import axios from 'axios'
 const services = ref([])
 const errors = ref([])
 const loading = ref(false)
+const canManage = ref(false)
+
+const fetchUser = async () => {
+  try {
+    await axios.get('/user')
+    canManage.value = true
+  } catch {
+    canManage.value = false
+  }
+}
 
 const fetchServices = async () => {
   errors.value = []
@@ -82,5 +92,8 @@ const deleteService = async (id: number) => {
   }
 }
 
-onMounted(fetchServices)
+onMounted(async () => {
+  await fetchUser()
+  await fetchServices()
+})
 </script>
