@@ -22,6 +22,7 @@ Follow the steps below to run the project in your local development environment.
 
     ```bash
     cp .env.example .env
+    php artisan key:generate
     ```
 
 4. Start the development server:
