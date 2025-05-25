@@ -1,6 +1,22 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { useUserStore } from './stores/user'
+import { computed } from 'vue'
+import axios from 'axios'
+
+const router = useRouter()
+const userStore = useUserStore()
+const user = computed(() => userStore.user)
+const logout = async () => {
+  try {
+    await axios.post('/logout')
+    userStore.setUser(null)
+    router.push('/login')
+  } catch (err) {
+    console.error('Logout failed', err)
+  }
+}
 </script>
 
 <template>
@@ -13,6 +29,15 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+
+        <template v-if="user">
+          <span class="user-email">{{ user.email }}</span>
+          <button @click="logout" class="auth-button text-black">Logout</button>
+        </template>
+        <template v-else>
+          <RouterLink to="/login">Login</RouterLink>
+          <RouterLink to="/register">Register</RouterLink>
+        </template>
       </nav>
     </div>
   </header>
@@ -54,6 +79,19 @@ nav a {
 
 nav a:first-of-type {
   border: 0;
+}
+
+.auth-button {
+  margin-left: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-email {
+  margin-left: 1rem;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 @media (min-width: 1024px) {

@@ -77,6 +77,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
+import { useUserStore } from '../../stores/user.ts'
 
 const requests = ref([])
 const loading = ref(true)
@@ -86,22 +87,12 @@ const showReplyModal = ref(false)
 const selectedRequestId = ref<number | null>(null)
 const replyText = ref('')
 
-const userRole = ref<string>('user')
-const isAdmin = computed(() => ['admin', 'super-admin'].includes(userRole.value))
+const userStore = useUserStore()
+const isAdmin = computed(() => userStore.isAdmin)
 
 onMounted(async () => {
-  await fetchUser()
   await fetchRequests()
 })
-
-const fetchUser = async () => {
-  try {
-    const response = await axios.get('/api/user')
-    userRole.value = response.data.role
-  } catch (err) {
-    console.error('Failed to fetch user info:', err)
-  }
-}
 
 const fetchRequests = async () => {
   loading.value = true
