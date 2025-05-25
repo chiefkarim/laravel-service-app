@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role',
     ];
 
+    // TODO: upgrade the role into enum
     /**
      * The attributes that should be hidden for serialization.
      *
