@@ -36,5 +36,15 @@ class AppServiceProvider extends ServiceProvider
                 || $user->role === 'admin'
                 || $user->id === $serviceRequest->user_id;
         });
+
+        // manage all permissions for resource (users service requests services ... )
+        // user permissions
+        Gate::define('has-permission', function (User $user, string $resource, string $operation) {
+            return $user->permissions()
+                ->where('resource', $resource)
+                ->where('operation', $operation)
+                ->exists();
+        });
+
     }
 }

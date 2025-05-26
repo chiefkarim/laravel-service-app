@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Http\Request;
@@ -17,3 +18,5 @@ Route::apiResource('services', ServiceController::class)->except(['index'])->mid
 Route::get('services', [ServiceController::class, 'index']);
 Route::apiResource('service-requests', ServiceRequestController::class)->except(['store'])->middleware('auth:sanctum');
 Route::post('service-requests', [ServiceRequestController::class, 'store']);
+
+Route::apiResource('permissions', PermissionController::class)->middleware('auth:sanctum');
