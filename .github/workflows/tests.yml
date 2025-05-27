@@ -18,6 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Backend (Laravel API)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -25,29 +26,43 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Node Dependencies
-        run: npm ci
-
-      - name: Install Dependencies
+      - name: Install Backend Dependencies
+        working-directory: ./api
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Copy Environment File
+      - name: Copy .env file
+        working-directory: ./api
         run: cp .env.example .env
 
       - name: Generate Application Key
+        working-directory: ./api
         run: php artisan key:generate
 
       - name: Publish Ziggy Configuration
+        working-directory: ./api
         run: php artisan ziggy:generate
 
-      - name: Build Assets
-        run: npm run build
+      # Frontend (Vue)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
 
-      - name: Tests
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install Frontend Dependencies
+        working-directory: ./client
+        run: pnpm install
+
+      - name: Build Frontend Assets
+        working-directory: ./client
+        run: pnpm run build
+
+      # Tests
+      - name: Run PHP Tests (Pest)
+        working-directory: ./api
         run: ./vendor/bin/pest
