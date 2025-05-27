@@ -1,6 +1,40 @@
 # 🚀 Development Setup
 
-Follow the steps below to run the project in your local development environment.
+You can quickly get started using the provided setup and run scripts.  
+Manual steps are also available below if you prefer doing it step by step.
+
+---
+
+## ⚡ Quick Start
+
+### 1. Run the setup script
+
+This will:
+
+- Install backend (`composer`) and frontend (`pnpm`) dependencies
+- Copy the Laravel `.env` file
+- Generate the Laravel app key
+
+```bash
+./setup.sh
+```
+
+### 2. Start the development servers
+
+This will run both:
+
+- Laravel development server (API)
+- Vite development server (Vue frontend)
+
+```bash
+./run.sh
+```
+
+---
+
+## 🛠️ Manual Setup
+
+If you'd rather set up each part manually, follow the steps below.
 
 ---
 
@@ -12,7 +46,7 @@ Follow the steps below to run the project in your local development environment.
     cd api
     ```
 
-2. Install dependencies (if not already installed):
+2. Install dependencies:
 
     ```bash
     composer install
@@ -37,7 +71,7 @@ Follow the steps below to run the project in your local development environment.
 
 ## 🖥️ Frontend (Vue SPA)
 
-1. Navigate to the frontend directory from the root of the project:
+1. Navigate to the frontend directory:
 
     ```bash
     cd client

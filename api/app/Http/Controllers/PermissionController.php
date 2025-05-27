@@ -32,8 +32,9 @@ class PermissionController extends Controller
             'operation' => 'required|string',
         ]);
 
-        Gate::authorize('has-permission', [$request->resource, $request->operation]);
-        $permission = Permission::create($request->only('user_id', 'service', 'operation'));
+        Gate::authorize('has-permission', ['permissions', 'create']);
+
+        $permission = Permission::create($request->only('user_id', 'resource', 'operation'));
 
         return response()->json($permission, 201);
     }
@@ -46,7 +47,7 @@ class PermissionController extends Controller
             'operation' => 'required|string',
         ]);
 
-        Gate::authorize('has-permission', [$request->resource, $request->operation]);
+        Gate::authorize('has-permission', ['permissions', 'update']);
         $permission->update($request->only('service', 'operation'));
 
         return response()->json($permission, 200);

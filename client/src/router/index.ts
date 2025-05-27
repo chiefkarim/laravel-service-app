@@ -6,6 +6,7 @@ import Services from '../views/services/index.vue'
 import ServiceCreate from '../views/services/create.vue'
 import ServiceEdit from '../views/services/edit.vue'
 import ServiceRequests from '../views/service-requests/index.vue'
+import Users from '../views/users.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,6 +42,11 @@ const router = createRouter({
       component: ServiceEdit,
     },
     { path: '/service-requests', name: 'Show service requests', component: ServiceRequests },
+    {
+      path: '/users',
+      name: 'Manage users',
+      component: Users,
+    },
     {
       path: '/about',
       name: 'about',

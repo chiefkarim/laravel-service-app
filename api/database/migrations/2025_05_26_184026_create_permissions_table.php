@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('service');
+            // TODO: UPDATE this into a union create read update delete
             $table->string('operation');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->unique(['user_id', 'service', 'operation']);

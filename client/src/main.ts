@@ -19,9 +19,10 @@ app.use(router)
 const userStore = useUserStore()
 
 axios
-  .get('/api/user')
+  .get('/api/users')
   .then((res) => {
-    userStore.setUser({ id: res.data.id, role: res.data.role, email: res.data.email })
+    console.log('users', res)
+    // userStore.setUser({ id: res.data.id, role: res.data.role, email: res.data.email })
   })
   .catch((err) => {
     console.error('Failed to fetch user', err)

@@ -10,5 +10,10 @@ class Permission extends Model
     /** @use HasFactory<\Database\Factories\PermissionFactory> */
     use HasFactory;
 
-    protected $fillabe = ['resource', 'operation', 'user_id'];
+    protected $fillable = ['operation', 'user_id', 'resource'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
