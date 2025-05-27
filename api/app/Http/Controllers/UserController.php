@@ -25,6 +25,8 @@ class UserController extends Controller
     public function show(User $user)
     {
         Gate::authorize('has-permission', ['users', 'read']);
+        Gate::authorize('has-permission', ['permissions', 'read']);
+        $user->load('permissions');
 
         return response()->json($user);
     }

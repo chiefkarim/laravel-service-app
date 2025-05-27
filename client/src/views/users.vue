@@ -117,6 +117,7 @@ const fetchUsers = async () => {
   loading.value = true
   try {
     const res = await axios.get('/api/users')
+    await axios.get('/api/users/1')
     users.value = res.data
   } catch (err) {
     error.value = 'Erreur lors du chargement des utilisateurs.'

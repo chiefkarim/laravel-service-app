@@ -5,14 +5,12 @@ import { useUserStore } from './stores/user'
 import { computed } from 'vue'
 import axios from 'axios'
 
-const router = useRouter()
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const logout = async () => {
   try {
-    await axios.post('/logout')
-    userStore.setUser(null)
-    router.push('/login')
+    await axios.post('/logout', { id: user.value.id })
+    window.location.href = '/'
   } catch (err) {
     console.error('Logout failed', err)
   }

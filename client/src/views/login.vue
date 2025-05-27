@@ -44,9 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const form = ref({
   email: '',
   password: '',
@@ -61,8 +59,7 @@ const login = async () => {
 
   try {
     await axios.get('sanctum/csrf-cookie').then(async () => await axios.post('/login', form.value))
-
-    router.push('/services')
+    window.location.href = '/'
   } catch (error) {
     if (error.response && error.response.data.errors) {
       const serverErrors = error.response.data.errors

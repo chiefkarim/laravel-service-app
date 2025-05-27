@@ -21,7 +21,12 @@ const userStore = useUserStore()
 axios
   .get('/api/user')
   .then((res) => {
-    userStore.setUser({ id: res.data.id, role: res.data.role, email: res.data.email })
+    userStore.setUser({
+      id: res.data.id,
+      role: res.data.role,
+      email: res.data.email,
+      permissions: res.data.permissions,
+    })
   })
   .catch((err) => {
     console.error('Failed to fetch user', err)
