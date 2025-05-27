@@ -15,36 +15,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      # backend (laravel api)
+      - name: setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
           tools: composer:v2
           coverage: xdebug
 
-      - name: Setup Node
+      - name: install backend dependencies
+        working-directory: ./api
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: copy .env file
+        working-directory: ./api
+        run: cp .env.example .env
+
+      - name: generate application key
+        working-directory: ./api
+        run: php artisan key:generate
+
+      # frontend (vue)
+      - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
 
-      - name: Install Node Dependencies
+      - name: install frontend dependencies
+        working-directory: ./client
         run: npm install
 
-      - name: Install PHP Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Copy Environment File
-        run: cp .env.example .env
-
-      - name: Generate Application Key
-        run: php artisan key:generate
-
-      - name: Build Assets
+      - name: build frontend assets
+        working-directory: ./client
         run: npm run build
 
-      - name: Run Tests
+      # tests
+      - name: run php tests (pest)
+        working-directory: ./api
         run: ./vendor/bin/pest
+       run: ./vendor/bin/pest

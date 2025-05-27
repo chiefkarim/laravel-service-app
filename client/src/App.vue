@@ -25,14 +25,16 @@ const logout = async () => {
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-
+      <div v-if="user.email">
+        <span class="user-email">{{ user.email }}</span>
+      </div>
       <nav>
         <RouterLink to="/services">Services</RouterLink>
         <RouterLink to="/service-requests">Service Requests</RouterLink>
         <RouterLink to="/">Make Request</RouterLink>
 
         <template v-if="user.email">
-          <span class="user-email">{{ user.email }}</span>
+          <RouterLink to="/users">Users</RouterLink>
           <button @click="logout" class="auth-button text-black">Logout</button>
         </template>
         <template v-else>
@@ -90,7 +92,6 @@ nav a:first-of-type {
 }
 
 .user-email {
-  margin-left: 1rem;
   font-weight: bold;
   color: #2c3e50;
 }
