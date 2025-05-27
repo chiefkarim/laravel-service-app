@@ -29,10 +29,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "pnpm"
+          cache: "npm"
 
       - name: Install Node Dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Install PHP Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -44,7 +44,7 @@ jobs:
         run: php artisan key:generate
 
       - name: Build Assets
-        run: pnpm run build
+        run: npm run build
 
       - name: Run Tests
         run: ./vendor/bin/pest
