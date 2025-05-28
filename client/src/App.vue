@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { useUserStore } from './stores/user'
 import { computed } from 'vue'
 import axios from 'axios'
-
+//TODO: show appropreate links for appropreate service requests
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const logout = async () => {

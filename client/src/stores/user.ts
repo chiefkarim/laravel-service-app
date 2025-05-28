@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 
+type Permission = { resource: string; operation: string }
 export const useUserStore = defineStore('user', {
   state: () => ({
     id: null as number | null,
     email: '',
     role: '',
-    permissions: [] as string[],
+    permissions: [] as Permission[],
   }),
   actions: {
-    setUser(user: { id: number; email: string; role: string; permissions: string[] }) {
+    setUser(user: { id: number; email: string; role: string; permissions: Permission[] }) {
       this.id = user.id
       this.email = user.email
       this.role = user.role

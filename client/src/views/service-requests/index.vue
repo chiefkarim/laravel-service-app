@@ -88,6 +88,7 @@ const selectedRequestId = ref<number | null>(null)
 const replyText = ref('')
 
 const userStore = useUserStore()
+const permissions = ref(userStore.permissions)
 const isAdmin = computed(() => userStore.isAdmin)
 
 onMounted(async () => {
