@@ -21,7 +21,6 @@ const userStore = useUserStore()
 await axios
   .get('/api/user')
   .then((res) => {
-    console.log('permissions', res.data)
     userStore.setUser({
       id: res.data.id,
       role: res.data.role,

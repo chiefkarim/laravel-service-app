@@ -10,7 +10,6 @@ class ServiceController extends Controller
 {
     public function index()
     {
-
         return Service::all();
     }
 
@@ -21,7 +20,7 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        Gate::authorize('manage-services');
+        Gate::authorize('has-permission', ['resource' => 'services', 'operation' => 'create']);
 
         $request->validate(['name' => 'required']);
         $service = Service::create($request->only('name'));
@@ -31,7 +30,7 @@ class ServiceController extends Controller
 
     public function update(Request $request, Service $service)
     {
-        Gate::authorize('manage-services');
+        Gate::authorize('has-permission', ['resource' => 'services', 'operation' => 'update']);
 
         $request->validate(['name' => 'required']);
         $service->update($request->only('name'));
@@ -41,7 +40,8 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        Gate::authorize('manage-services');
+
+        Gate::authorize('has-permission', ['resource' => 'services', 'operation' => 'delete']);
 
         $service->delete();
 

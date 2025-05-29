@@ -16,3 +16,10 @@ export function hasAllPermissions(
     ),
   )
 }
+
+export function canRead(
+  resource: string,
+  userPermissions: { resource: string; operation: string }[],
+): boolean {
+  return userPermissions.some((perm) => perm.resource === resource && perm.operation === 'read')
+}

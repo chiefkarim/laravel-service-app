@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ServiceRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Gate;
 
 class ServiceRequestController extends Controller
@@ -13,20 +12,16 @@ class ServiceRequestController extends Controller
     public function index()
     {
 
-        $user = FacadesAuth::user();
-        if (Gate::allows('service-request-update')) {
+        Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'read']);
 
-            return ServiceRequest::with(['user', 'service'])->get();
-
-        }
-
-        return ServiceRequest::with(['user', 'service'])->where('user_id', $user->getAuthIdentifier())->get();
+        return ServiceRequest::with(['user', 'service'])->get();
 
     }
 
     public function show(ServiceRequest $serviceRequest)
     {
-        Gate::authorize('access-service-request', $serviceRequest);
+
+        Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'read']);
 
         return $serviceRequest->load(['user', 'service']);
 
@@ -61,9 +56,7 @@ class ServiceRequestController extends Controller
 
     public function update(Request $request, ServiceRequest $serviceRequest)
     {
-
-        Gate::authorize('service-request-update');
-
+        Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'update']);
         $request->validate([
             'status' => 'sometimes|required|in:pending,approved,declined',
             'reply' => 'nullable|string',
@@ -77,7 +70,8 @@ class ServiceRequestController extends Controller
     public function destroy(ServiceRequest $serviceRequest)
     {
 
-        Gate::authorize('access-service-request', $serviceRequest);
+        Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'delete']);
+
         $serviceRequest->delete();
 
         return response()->json(null, 204);

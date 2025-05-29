@@ -4,9 +4,28 @@ import HelloWorld from './components/HelloWorld.vue'
 import { useUserStore } from './stores/user'
 import { computed } from 'vue'
 import axios from 'axios'
-//TODO: show appropreate links for appropreate service requests
+import { routes } from './router/index.ts'
+import { canRead } from './lib/utils'
+
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
+const userPermissions = computed(() => user.value?.permissions || [])
+
+const readableRoutes = computed(() => {
+  return routes.filter((route) => {
+    const permissions = route.meta?.permissions
+
+    if (user.value?.email && route.path === '/login') return false
+    if (route.path === '/not-authorized') return false
+    if (route.path.includes(':id')) return false
+    if (!permissions) return true
+
+    return permissions.some(
+      (p) => p.operation === 'read' && canRead(p.resource, userPermissions.value),
+    )
+  })
+})
+
 const logout = async () => {
   try {
     await axios.post('/logout', { id: user.value.id })
@@ -27,17 +46,12 @@ const logout = async () => {
         <span class="user-email">{{ user.email }}</span>
       </div>
       <nav>
-        <RouterLink to="/services">Services</RouterLink>
-        <RouterLink to="/service-requests">Service Requests</RouterLink>
-        <RouterLink to="/">Make Request</RouterLink>
+        <RouterLink v-for="route in readableRoutes" :key="route.path" :to="route.path">
+          {{ route.name }}
+        </RouterLink>
 
         <template v-if="user.email">
-          <RouterLink to="/users">Users</RouterLink>
           <button @click="logout" class="auth-button text-black">Logout</button>
-        </template>
-        <template v-else>
-          <RouterLink to="/login">Login</RouterLink>
-          <RouterLink to="/register">Register</RouterLink>
         </template>
       </nav>
     </div>
