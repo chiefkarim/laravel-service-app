@@ -31,7 +31,7 @@
           <p class="text-gray-800 mt-1 whitespace-pre-wrap">{{ request.reply }}</p>
         </div>
 
-        <div v-if="isAdmin" class="mt-4 space-x-2 flex items-center">
+        <div v-if="can('service-requests', 'update')" class="mt-4 space-x-2 flex items-center">
           <select
             v-model="request.status"
             @change="updateServiceRequest(request.id, { status: request.status })"
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useUserStore } from '../../stores/user.ts'
 
@@ -89,12 +89,16 @@ const replyText = ref('')
 
 const userStore = useUserStore()
 const permissions = ref(userStore.permissions)
-const isAdmin = computed(() => userStore.isAdmin)
 
 onMounted(async () => {
   await fetchRequests()
 })
 
+const can = (resource: string, operation: string): boolean => {
+  return permissions.value.some(
+    (perm) => perm.resource === resource && perm.operation === operation,
+  )
+}
 const fetchRequests = async () => {
   loading.value = true
   try {
