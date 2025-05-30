@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\RequestReceived;
+use App\Mail\RequestUpdate;
 use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -61,6 +62,10 @@ class ServiceRequestController extends Controller
         ]);
 
         $serviceRequest->update($request->only(['details', 'status', 'reply']));
+
+        Mail::to($serviceRequest->email)->send(
+            new RequestUpdate($serviceRequest)
+        );
 
         return response()->json($serviceRequest->load(['service']), 200);
     }
