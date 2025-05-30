@@ -13,7 +13,7 @@ Route::get('/user', function (Request $request) {
     return $user;
 })->middleware('auth:sanctum');
 
-Route::get('/test', function () {
+Route::get('/login', function () {
     return 'success';
 })->middleware('auth:sanctum');
 

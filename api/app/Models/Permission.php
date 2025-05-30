@@ -10,10 +10,10 @@ class Permission extends Model
     /** @use HasFactory<\Database\Factories\PermissionFactory> */
     use HasFactory;
 
-    protected $fillable = ['operation', 'user_id', 'resource'];
+    protected $fillable = ['operation', 'resource'];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class);
     }
 }
