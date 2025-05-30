@@ -34,23 +34,14 @@ class PermissionController extends Controller
 
         Gate::authorize('has-permission', ['permissions', 'create']);
 
-        $permission = Permission::create($request->only('user_id', 'resource', 'operation'));
+        $permission = Permission::firstOrCreate($request->only('resource', 'operation'));
+
+        $user = \App\Models\User::findOrFail($request->input('user_id'));
+        if (! $user->permissions->contains($permission->id)) {
+            $user->permissions()->attach($permission->id);
+        }
 
         return response()->json($permission, 201);
-    }
-
-    public function update(Request $request, Permission $permission)
-    {
-
-        $request->validate([
-            'resource' => 'required|string',
-            'operation' => 'required|string',
-        ]);
-
-        Gate::authorize('has-permission', ['permissions', 'update']);
-        $permission->update($request->only('service', 'operation'));
-
-        return response()->json($permission, 200);
     }
 
     public function destroy(Permission $permission)

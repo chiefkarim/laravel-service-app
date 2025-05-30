@@ -10,12 +10,7 @@ class ServiceRequest extends Model
     /** @use HasFactory<\Database\Factories\ServiceRequestFactory> */
     use HasFactory;
 
-    protected $fillable = ['user_id', 'details', 'service_id', 'status', 'reply'];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $fillable = ['name', 'email', 'details', 'service_id', 'status', 'reply'];
 
     public function service()
     {
