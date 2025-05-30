@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RequestReceived;
 use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 
 class ServiceRequestController extends Controller
 {
@@ -41,6 +43,10 @@ class ServiceRequestController extends Controller
             'service_id' => $request->service_id,
             'details' => $request->details,
         ]);
+        // TODO: make it more personalized by sending request information
+        Mail::to($request->email)->send(
+            new RequestReceived
+        );
 
         return response()->json($serviceRequest->load(['service']), 201);
     }

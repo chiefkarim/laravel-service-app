@@ -9,7 +9,8 @@
     <div v-else class="space-y-4">
       <div v-for="request in requests" :key="request.id" class="border border-gray-200 rounded p-4">
         <p><strong>Service:</strong> {{ request.service?.name }}</p>
-        <p><strong>User:</strong> {{ request.user?.email }}</p>
+        <p><strong>Email:</strong> {{ request?.email }}</p>
+        <p><strong>Name:</strong> {{ request?.name }}</p>
         <p><strong>Details:</strong> {{ request.details }}</p>
 
         <p>

@@ -13,10 +13,6 @@ Route::get('/user', function (Request $request) {
     return $user;
 })->middleware('auth:sanctum');
 
-Route::get('/login', function () {
-    return 'success';
-})->middleware('auth:sanctum');
-
 Route::apiResource('services', ServiceController::class)->except(['index'])->middleware('auth:sanctum');
 Route::get('services', [ServiceController::class, 'index']);
 Route::apiResource('service-requests', ServiceRequestController::class)->except(['store'])->middleware('auth:sanctum');
