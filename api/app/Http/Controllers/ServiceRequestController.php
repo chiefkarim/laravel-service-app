@@ -46,7 +46,7 @@ class ServiceRequestController extends Controller
         ]);
         // TODO: make it more personalized by sending request information
         $serviceRequest->load('service');
-        Mail::to($request->email)->send(
+        Mail::to($request->email)->queue(
             new RequestReceived($serviceRequest)
         );
 
@@ -64,7 +64,7 @@ class ServiceRequestController extends Controller
 
         $serviceRequest->update($request->only(['details', 'status', 'reply']));
 
-        Mail::to($serviceRequest->email)->send(
+        Mail::to($serviceRequest->email)->queue(
             new RequestUpdate($serviceRequest)
         );
 
