@@ -45,8 +45,9 @@ class ServiceRequestController extends Controller
             'details' => $request->details,
         ]);
         // TODO: make it more personalized by sending request information
+        $serviceRequest->load('service');
         Mail::to($request->email)->send(
-            new RequestReceived
+            new RequestReceived($serviceRequest)
         );
 
         return response()->json($serviceRequest->load(['service']), 201);

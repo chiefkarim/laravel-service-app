@@ -1,12 +1,15 @@
 <x-mail::message>
     # Service Request Received
 
-    Hello,
+    Hello {{ $serviceRequest->name }},
 
-    We have received your service request and it is currently being reviewed by our team.
+    We have received your request for the service: {{ $serviceRequest->service->name }}.
 
-    We will get back to you as soon as possible with more information.
+    Here are the details you provided:
+    {{ $serviceRequest->details }}
 
-    Thanks,
+    Our team is currently reviewing your request and will get back to you as soon as possible.
+
+    Thanks
     {{ config('app.name') }}
 </x-mail::message>
