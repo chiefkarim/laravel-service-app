@@ -7,6 +7,12 @@ import axios from 'axios'
 import { routes } from './router/index.ts'
 import { canRead } from './lib/utils'
 
+import { useEcho } from '@laravel/echo-vue'
+
+useEcho(`service-requests`, '.new-request', (e) => {
+  console.log(e)
+})
+
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const userPermissions = computed(() => user.value?.permissions || [])

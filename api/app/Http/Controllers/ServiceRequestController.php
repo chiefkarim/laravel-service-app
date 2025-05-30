@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewRequest;
 use App\Mail\RequestReceived;
 use App\Mail\RequestUpdate;
 use App\Models\ServiceRequest;
@@ -44,8 +45,12 @@ class ServiceRequestController extends Controller
             'service_id' => $request->service_id,
             'details' => $request->details,
         ]);
-        // TODO: make it more personalized by sending request information
+
         $serviceRequest->load('service');
+
+        // boradcast the evnet
+        NewRequest::dispatch($serviceRequest);
+
         Mail::to($request->email)->queue(
             new RequestReceived($serviceRequest)
         );
