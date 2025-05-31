@@ -1,35 +1,37 @@
 <template>
-  <div class="max-w-md mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Edit Service</h1>
+  <v-container class="pa-4" max-width="500">
+    <v-card class="mx-auto pa-4" elevation="3">
+      <v-card-title class="text-h6 font-weight-bold mb-4"> Edit Service </v-card-title>
 
-    <form v-if="loaded" @submit.prevent="updateService">
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Service Name</label>
-        <input
+      <v-alert v-if="!loaded && !errors.length" type="info" dense class="mb-4">
+        Loading service data...
+      </v-alert>
+
+      <v-form v-if="loaded" @submit.prevent="updateService" ref="formRef">
+        <!-- Service Name -->
+        <v-text-field
           v-model="form.name"
-          type="text"
-          class="w-full px-3 py-2 border rounded"
-          placeholder="Enter service name"
+          label="Service Name"
+          autocomplete="off"
+          :rules="[rules.required]"
+          required
+          class="mb-4"
         />
-      </div>
 
-      <div v-if="errors.length" class="mb-4 text-red-600 text-sm">
-        <ul>
+        <!-- Submit button -->
+        <v-btn type="submit" :loading="loading" color="primary" block class="mt-2">
+          Update Service
+        </v-btn>
+      </v-form>
+
+      <!-- Error messages -->
+      <v-alert v-if="errors.length" type="error" class="mt-4" dense>
+        <ul class="ma-0 pa-0">
           <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
         </ul>
-      </div>
-
-      <button
-        type="submit"
-        class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded"
-        :disabled="loading"
-      >
-        {{ loading ? 'Updating...' : 'Update Service' }}
-      </button>
-    </form>
-
-    <div v-else class="text-center text-gray-600">Loading service data...</div>
-  </div>
+      </v-alert>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -45,6 +47,11 @@ const form = ref({ name: '' })
 const errors = ref<string[]>([])
 const loading = ref(false)
 const loaded = ref(false)
+const formRef = ref()
+
+const rules = {
+  required: (value: string) => !!value || 'Required field.',
+}
 
 const fetchService = async () => {
   try {
@@ -60,9 +67,16 @@ const updateService = async () => {
   loading.value = true
   errors.value = []
 
+  const isValid = await formRef.value?.validate()
+  if (!isValid?.valid) {
+    errors.value = ['Please correct the highlighted fields.']
+    loading.value = false
+    return
+  }
+
   try {
     await axios.put(`/api/services/${serviceId}`, form.value)
-    router.push('/services') // Adjust this route to your actual service list page
+    router.push('/services')
   } catch (error) {
     if (error.response?.data?.errors) {
       errors.value = Object.values(error.response.data.errors).flat()

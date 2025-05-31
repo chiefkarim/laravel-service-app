@@ -115,7 +115,6 @@ const submit = async () => {
     await axios.post('/api/service-requests', form.value)
     success.value = true
     form.value = { email: '', service_id: '', details: '', name: '' }
-    formRef.value.reset()
   } catch (err) {
     error.value = err.response?.data?.message || 'An error occurred.'
   } finally {

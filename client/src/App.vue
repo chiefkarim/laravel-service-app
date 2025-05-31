@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { computed } from 'vue'
+import { computed,ref } from 'vue'
 import axios from 'axios'
 import { routes } from './router/index.ts'
 import { canRead } from './lib/utils'
 
 import { useEcho } from '@laravel/echo-vue'
+const newRequests = ref(0)
 useEcho(`service-requests`, '.new-request', (e) => {
   console.log(e)
+  newRequests.value = newRequests.value+1
 })
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
@@ -51,6 +53,22 @@ const logout = async () => {
         <v-btn variant="text" v-for="route in readableRoutes" :key="route.path" :to="route.path">
           {{ route.name }}
         </v-btn>
+      <v-badge
+          :content="newRequests.value"
+          v-if="newRequests.value > 0"
+          color="red"
+          overlap
+          class="ml-2"
+        >
+          <v-btn
+            icon
+            variant="tonal"
+            color="primary"
+            :to="'/service-requests'" <!-- Adjust this path if needed -->
+          >
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+        </v-badge>
 
         <v-btn color="primary" variant="outlined" v-if="user.email" @click="logout"> Logout </v-btn>
       </v-toolbar>
