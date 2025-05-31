@@ -1,6 +1,7 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
+import { createVuetify } from 'vuetify'
 
 import App from './App.vue'
 import router from './router'
@@ -8,6 +9,8 @@ import axios from 'axios'
 import { createPinia } from 'pinia'
 import { useUserStore } from './stores/user'
 import { configureEcho } from '@laravel/echo-vue'
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
 
 axios.defaults.baseURL = 'http://localhost:8000'
 axios.defaults.withCredentials = true
@@ -17,6 +20,8 @@ const pinia = createPinia()
 const app = createApp(App)
 app.use(pinia)
 
+const vuetify = createVuetify()
+app.use(vuetify)
 const userStore = useUserStore()
 
 await axios
