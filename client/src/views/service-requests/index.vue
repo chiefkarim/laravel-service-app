@@ -1,80 +1,102 @@
 <template>
-  <div class="p-4 max-w-4xl mx-auto bg-white rounded shadow">
-    <h2 class="text-2xl font-bold mb-6">Service Requests</h2>
+  <v-container class="py-6" max-width="lg">
+    <v-card class="pa-4" elevation="2">
+      <v-card-title class="text-h5 font-weight-bold">Service Requests</v-card-title>
 
-    <div v-if="loading" class="text-gray-600">Loading service requests...</div>
-    <div v-else-if="error" class="text-red-600">{{ error }}</div>
-    <div v-else-if="requests.length === 0" class="text-gray-600">No service requests found.</div>
-
-    <div v-else class="space-y-4">
-      <div v-for="request in requests" :key="request.id" class="border border-gray-200 rounded p-4">
-        <p><strong>Service:</strong> {{ request.service?.name }}</p>
-        <p><strong>Email:</strong> {{ request?.email }}</p>
-        <p><strong>Name:</strong> {{ request?.name }}</p>
-        <p><strong>Details:</strong> {{ request.details }}</p>
-
-        <p>
-          <strong>Status:</strong>
-          <span :class="statusColor(request.status)" class="capitalize font-medium">
-            {{ request.status }}
-          </span>
-        </p>
-
-        <p class="text-sm text-gray-500">
-          Submitted: {{ new Date(request.created_at).toLocaleString() }}
-        </p>
-
-        <div
-          v-if="request.reply"
-          class="mt-3 bg-gray-100 border border-gray-300 text-sm p-3 rounded"
-        >
-          <strong class="text-gray-700">Reply:</strong>
-          <p class="text-gray-800 mt-1 whitespace-pre-wrap">{{ request.reply }}</p>
+      <v-card-text>
+        <div v-if="loading">
+          <v-alert type="info" variant="outlined">Loading service requests...</v-alert>
         </div>
 
-        <div v-if="can('service-requests', 'update')" class="mt-4 space-x-2 flex items-center">
-          <select
-            v-model="request.status"
-            @change="updateServiceRequest(request.id, { status: request.status })"
-            class="border px-2 py-1 rounded text-sm"
-          >
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="declined">Declined</option>
-          </select>
-
-          <button
-            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-            @click="openReplyDialog(request.id)"
-          >
-            Add Reply
-          </button>
+        <div v-else-if="error">
+          <v-alert type="error" variant="outlined">{{ error }}</v-alert>
         </div>
-      </div>
-    </div>
 
-    <div
-      v-if="showReplyModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded p-4 max-w-md w-full">
-        <h3 class="text-lg font-semibold mb-2">Add Reply</h3>
-        <textarea
-          v-model="replyText"
-          rows="4"
-          class="w-full border px-2 py-1 rounded mb-2"
-        ></textarea>
-        <div class="flex justify-end space-x-2">
-          <button @click="submitReply" class="bg-green-600 text-white px-3 py-1 rounded">
-            Submit
-          </button>
-          <button @click="closeReplyDialog" class="bg-gray-300 px-3 py-1 rounded">Cancel</button>
+        <div v-else-if="requests.length === 0">
+          <v-alert type="info" variant="outlined">No service requests found.</v-alert>
         </div>
-      </div>
-    </div>
-  </div>
+
+        <v-container v-else fluid>
+          <v-row dense v-for="request in requests" :key="request.id">
+            <v-col cols="12">
+              <v-card class="mb-4" outlined>
+                <v-card-text>
+                  <div><strong>Service:</strong> {{ request.service?.name }}</div>
+                  <div><strong>Email:</strong> {{ request.email }}</div>
+                  <div><strong>Name:</strong> {{ request.name }}</div>
+                  <div><strong>Details:</strong> {{ request.details }}</div>
+
+                  <div class="mt-2">
+                    <strong>Status:</strong>
+                    <v-chip :color="statusColor(request.status)" class="text-capitalize">
+                      {{ request.status }}
+                    </v-chip>
+                  </div>
+
+                  <div class="text-grey text-caption mt-1">
+                    Submitted: {{ new Date(request.created_at).toLocaleString() }}
+                  </div>
+
+                  <v-alert
+                    v-if="request.reply"
+                    class="mt-3"
+                    type="info"
+                    variant="outlined"
+                    density="compact"
+                  >
+                    <strong>Reply:</strong>
+                    <div class="mt-1" style="white-space: pre-wrap">{{ request.reply }}</div>
+                  </v-alert>
+
+                  <div
+                    v-if="can('service-requests', 'update')"
+                    class="mt-4 d-flex align-center gap-2"
+                  >
+                    <v-select
+                      v-model="request.status"
+                      :items="['pending', 'approved', 'declined']"
+                      label="Update Status"
+                      density="compact"
+                      hide-details
+                      style="max-width: 180px"
+                      @update:modelValue="
+                        updateServiceRequest(request.id, { status: request.status })
+                      "
+                    ></v-select>
+
+                    <v-btn
+                      color="primary"
+                      @click="openReplyDialog(request.id)"
+                      class="ml-2"
+                      density="compact"
+                    >
+                      Add Reply
+                    </v-btn>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+
+    <!-- Reply Modal -->
+    <v-dialog v-model="showReplyModal" max-width="500">
+      <v-card>
+        <v-card-title class="text-h6">Add Reply</v-card-title>
+        <v-card-text>
+          <v-textarea v-model="replyText" rows="4" label="Reply" auto-grow></v-textarea>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" @click="submitReply">Submit</v-btn>
+          <v-btn color="grey" @click="closeReplyDialog">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -114,6 +136,7 @@ const fetchRequests = async () => {
 
 const updateServiceRequest = async (id: number, payload: { status?: string; reply?: string }) => {
   try {
+    console.info('hello', id, payload)
     const response = await axios.put(`/api/service-requests/${id}`, payload)
     const updated = response.data
     const index = requests.value.findIndex((r) => r.id === id)
@@ -144,12 +167,12 @@ const submitReply = async () => {
 const statusColor = (status: string) => {
   switch (status) {
     case 'approved':
-      return 'text-green-600'
+      return 'green'
     case 'declined':
-      return 'text-red-600'
+      return 'red'
     case 'pending':
     default:
-      return 'text-yellow-600'
+      return 'yellow'
   }
 }
 </script>
