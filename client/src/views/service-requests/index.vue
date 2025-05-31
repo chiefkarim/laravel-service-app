@@ -95,16 +95,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-pagination
+      v-if="lastPage > 1"
+      v-model="currentPage"
+      :length="lastPage"
+      class="mt-4"
+      color="primary"
+    />
   </v-container>
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useUserStore } from '../../stores/user.ts'
 
 const requests = ref([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+const currentPage = ref(1)
+const lastPage = ref(1)
 
 const showReplyModal = ref(false)
 const selectedRequestId = ref<number | null>(null)
@@ -116,17 +127,23 @@ const permissions = ref(userStore.permissions)
 onMounted(async () => {
   await fetchRequests()
 })
-
+watch(currentPage, () => {
+  fetchRequests()
+})
 const can = (resource: string, operation: string): boolean => {
   return permissions.value.some(
     (perm) => perm.resource === resource && perm.operation === operation,
   )
 }
+
 const fetchRequests = async () => {
   loading.value = true
   try {
-    const response = await axios.get('/api/service-requests')
-    requests.value = response.data
+    const response = await axios.get('/api/service-requests', {
+      params: { page: currentPage.value },
+    })
+    requests.value = response.data.data
+    lastPage.value = response.data.last_page
   } catch (err) {
     error.value = err.response?.data?.message || 'Failed to load service requests.'
   } finally {

@@ -17,7 +17,7 @@ class ServiceRequestController extends Controller
 
         Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'read']);
 
-        return ServiceRequest::with(['service'])->latest()->get();
+        return ServiceRequest::with(['service'])->latest()->paginate(10);
 
     }
 
