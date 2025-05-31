@@ -1,70 +1,83 @@
 <template>
-  <div class="max-w-md mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Login</h1>
+  <v-container class="pa-4" max-width="500">
+    <v-card class="mx-auto pa-4" elevation="3">
+      <v-card-title class="text-h6 font-weight-bold mb-4">Login</v-card-title>
 
-    <form @submit.prevent="login">
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Email</label>
-        <input
-          name="email"
-          autocomplete="email"
-          v-model="form.email"
-          type="email"
-          class="w-full px-3 py-2 border rounded"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Password</label>
-        <input
-          name="password"
-          v-model="form.password"
-          type="password"
-          class="w-full px-3 py-2 border rounded"
-        />
-      </div>
-
-      <div v-if="errors.length" class="mb-4 text-red-600 text-sm">
-        <ul>
+      <v-alert v-if="errors.length" type="error" class="mb-4" dense>
+        <ul class="ma-0 pa-0">
           <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
         </ul>
-      </div>
+      </v-alert>
 
-      <button
-        type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-        :disabled="loading"
-      >
-        {{ loading ? 'Logging in...' : 'Login' }}
-      </button>
-    </form>
-  </div>
+      <v-form @submit.prevent="login" ref="formRef">
+        <!-- Email -->
+        <v-text-field
+          v-model="form.email"
+          label="Email"
+          type="email"
+          autocomplete="email"
+          :rules="[rules.required, rules.email]"
+          required
+          class="mb-4"
+        />
+
+        <!-- Password -->
+        <v-text-field
+          v-model="form.password"
+          label="Password"
+          type="password"
+          autocomplete="current-password"
+          :rules="[rules.required]"
+          required
+          class="mb-4"
+        />
+
+        <!-- Submit button -->
+        <v-btn type="submit" :loading="loading" color="primary" block class="mt-2"> Login </v-btn>
+      </v-form>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
 
+const formRef = ref()
+
 const form = ref({
   email: '',
   password: '',
 })
 
-const errors = ref([])
+const errors = ref<string[]>([])
 const loading = ref(false)
+
+const rules = {
+  required: (value: string) => !!value || 'Required field.',
+  email: (value: string) => /.+@.+\..+/.test(value) || 'Invalid email format.',
+}
 
 const login = async () => {
   errors.value = []
+
+  const isValid = await formRef.value?.validate()
+  if (!isValid?.valid) {
+    errors.value.push('Please correct the highlighted fields.')
+    return
+  }
+
   loading.value = true
 
   try {
-    await axios.get('sanctum/csrf-cookie').then(async () => await axios.post('/login', form.value))
+    await axios.get('/sanctum/csrf-cookie')
+    await axios.post('/login', form.value)
     window.location.href = '/'
-  } catch (error) {
-    if (error.response && error.response.data.errors) {
+  } catch (error: any) {
+    if (error.response?.data?.errors) {
       const serverErrors = error.response.data.errors
       errors.value = Object.values(serverErrors).flat()
-    } else if (error.response && error.response.data.message) {
+    } else if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
     } else {
       errors.value = ['An unexpected error occurred.']
