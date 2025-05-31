@@ -1,51 +1,56 @@
 <template>
-  <div class="max-w-md mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Available Services</h1>
+  <v-container class="pa-4" max-width="600">
+    <v-card elevation="0" class="pa-4">
+      <v-card-title class="text-h5 font-weight-bold mb-4 pa-0">Available Services</v-card-title>
 
-    <div v-if="!loading && services.length > 0 && can('services', 'create')" class="mb-4">
-      <RouterLink
-        to="/services/create"
-        class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      <v-btn
+        v-if="!loading && services.length > 0 && can('services', 'create')"
+        color="primary"
+        class="mb-4"
+        :to="{ path: '/services/create' }"
       >
         + Create Service
-      </RouterLink>
-    </div>
+      </v-btn>
 
-    <div v-if="loading" class="text-blue-600 mb-4">Loading services...</div>
+      <v-alert v-if="loading" type="info" class="mb-4"> Loading services... </v-alert>
 
-    <div v-if="errors.length" class="mb-4 text-red-600 text-sm">
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-      </ul>
-    </div>
+      <v-alert v-if="errors.length" type="error" dense outlined class="mb-4">
+        <ul>
+          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+        </ul>
+      </v-alert>
 
-    <ul v-if="services.length" class="space-y-2">
-      <li
-        v-for="(service, index) in services"
-        :key="index"
-        class="px-4 py-2 border rounded flex justify-between items-center"
-      >
-        <span>{{ service.name }}</span>
-        <div class="gap-2 flex">
-          <div v-if="can('services', 'update')" class="flex space-x-2">
-            <RouterLink
+      <v-list v-if="services.length">
+        <v-list-item v-for="(service, index) in services" :key="index" class="border rounded mb-2">
+          <v-list-item-title>{{ service.name }}</v-list-item-title>
+
+          <template #append>
+            <v-btn
+              v-if="can('services', 'update')"
               :to="`/services/${service.id}/edit`"
-              class="text-blue-600 hover:underline text-sm"
+              variant="text"
+              color="primary"
+              class="text-caption"
             >
               Edit
-            </RouterLink>
-          </div>
-          <div v-if="can('services', 'delete')" class="flex space-x-2">
-            <button @click="deleteService(service.id)" class="text-red-600 hover:underline text-sm">
-              Delete
-            </button>
-          </div>
-        </div>
-      </li>
-    </ul>
+            </v-btn>
 
-    <div v-else-if="!loading" class="text-gray-500">No services found.</div>
-  </div>
+            <v-btn
+              v-if="can('services', 'delete')"
+              @click="deleteService(service.id)"
+              variant="text"
+              color="error"
+              class="text-caption"
+            >
+              Delete
+            </v-btn>
+          </template>
+        </v-list-item>
+      </v-list>
+
+      <div v-else-if="!loading" class="text-medium-emphasis">No services found.</div>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
