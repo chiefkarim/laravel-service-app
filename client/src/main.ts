@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { useUserStore } from './stores/user'
 import { configureEcho } from '@laravel/echo-vue'
 import '@mdi/font/css/materialdesignicons.css'
@@ -18,6 +19,7 @@ axios.defaults.withXSRFToken = true
 
 const pinia = createPinia()
 const app = createApp(App)
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 
 const vuetify = createVuetify()

@@ -7,15 +7,14 @@ import { routes } from './router/index.ts'
 import { canRead } from './lib/utils'
 
 import { useEcho } from '@laravel/echo-vue'
-const newRequests = ref<[]>([]) // tableau pour stocker les nouvelles demandes
 const menu = ref(false) // pour afficher/masquer le menu
-
-useEcho(`service-requests`, '.new-request', (e) => {
-  newRequests.value.unshift(e) // on suppose que `e.request` contient les infos utiles
-})
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const userPermissions = computed(() => user.value?.permissions || [])
+
+useEcho(`service-requests`, '.new-request', (e) => {
+  userStore.addNotification(e) // on suppose que `e.request` contient les infos utiles
+})
 
 const readableRoutes = computed(() => {
   return routes.filter((route) => {
@@ -59,7 +58,11 @@ const logout = async () => {
           <v-menu v-model="menu" location="bottom end">
             <template #activator="{ props }">
               <v-btn icon v-bind="props">
-                <v-badge :content="newRequests.length" color="error" v-if="newRequests.length > 0">
+                <v-badge
+                  :content="userStore.unreadCount"
+                  color="error"
+                  v-if="userStore.unreadCount > 0"
+                >
                   <v-icon>mdi-bell</v-icon>
                 </v-badge>
                 <v-icon v-else>mdi-bell-outline</v-icon>
@@ -67,21 +70,33 @@ const logout = async () => {
             </template>
 
             <v-list>
-              <template v-if="newRequests.length">
-                <v-list-item v-for="(req, index) in newRequests" :key="index">
-                  <v-list-item-title
-                    style="cursor: pointer"
-                    @click="$router.push(`/service-requests/${req.id}/edit`)"
-                    >New request for {{ req.service.name }}</v-list-item-title
-                  >
+              <template v-if="userStore.unreadCount">
+                <v-list-item v-for="(req, index) in userStore.notifications" :key="index">
+                  <div class="d-flex gap-2">
+                    <v-list-item-title
+                      @click="$router.push(`/service-requests/${req.id}/edit`)"
+                      style="cursor: pointer"
+                    >
+                      New request for {{ req.service.name }}
+                    </v-list-item-title>
+
+                    <v-icon
+                      small
+                      color="error"
+                      @click.stop="userStore.deleteNotificationById(req.id)"
+                    >
+                      mdi-delete
+                    </v-icon>
+                  </div>
                 </v-list-item>
               </template>
               <v-list-item v-else>
-                <v-list-item-title>Aucune nouvelle demande</v-list-item-title>
+                <v-list-item-title>No new requests</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </div>
+
         <v-btn color="primary" variant="outlined" v-if="user.email" @click="logout"> Logout </v-btn>
       </v-toolbar>
     </v-card>
