@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { computed,ref } from 'vue'
+import { computed, ref } from 'vue'
 import axios from 'axios'
 import { routes } from './router/index.ts'
 import { canRead } from './lib/utils'
 
 import { useEcho } from '@laravel/echo-vue'
-const newRequests = ref(0)
+const newRequests = ref<[]>([]) // tableau pour stocker les nouvelles demandes
+const menu = ref(false) // pour afficher/masquer le menu
+
 useEcho(`service-requests`, '.new-request', (e) => {
-  console.log(e)
-  newRequests.value = newRequests.value+1
+  newRequests.value.unshift(e) // on suppose que `e.request` contient les infos utiles
 })
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
@@ -53,23 +54,34 @@ const logout = async () => {
         <v-btn variant="text" v-for="route in readableRoutes" :key="route.path" :to="route.path">
           {{ route.name }}
         </v-btn>
-      <v-badge
-          :content="newRequests.value"
-          v-if="newRequests.value > 0"
-          color="red"
-          overlap
-          class="ml-2"
-        >
-          <v-btn
-            icon
-            variant="tonal"
-            color="primary"
-            :to="'/service-requests'" <!-- Adjust this path if needed -->
-          >
-            <v-icon>mdi-bell</v-icon>
-          </v-btn>
-        </v-badge>
 
+        <div v-if="user.email">
+          <v-menu v-model="menu" location="bottom end">
+            <template #activator="{ props }">
+              <v-btn icon v-bind="props">
+                <v-badge :content="newRequests.length" color="error" v-if="newRequests.length > 0">
+                  <v-icon>mdi-bell</v-icon>
+                </v-badge>
+                <v-icon v-else>mdi-bell-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <template v-if="newRequests.length">
+                <v-list-item v-for="(req, index) in newRequests" :key="index">
+                  <v-list-item-title
+                    style="cursor: pointer"
+                    @click="$router.push(`/service-requests/${req.id}/edit`)"
+                    >New request for {{ req.service.name }}</v-list-item-title
+                  >
+                </v-list-item>
+              </template>
+              <v-list-item v-else>
+                <v-list-item-title>Aucune nouvelle demande</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
         <v-btn color="primary" variant="outlined" v-if="user.email" @click="logout"> Logout </v-btn>
       </v-toolbar>
     </v-card>

@@ -5,6 +5,7 @@ import Services from '../views/services/index.vue'
 import ServiceCreate from '../views/services/create.vue'
 import ServiceEdit from '../views/services/edit.vue'
 import ServiceRequests from '../views/service-requests/index.vue'
+import ServiceRequestsEdit from '../views/service-requests/Edit.vue'
 import Users from '../views/users.vue'
 import { useUserStore } from '@/stores/user'
 import { hasAllPermissions } from '@/lib/utils'
@@ -55,13 +56,26 @@ export const routes = [
   },
   {
     path: '/service-requests',
-    name: 'service requests',
+    name: 'Service Requests',
     component: ServiceRequests,
     meta: {
       permissions: [
         {
           resource: 'service-requests',
           operation: 'read',
+        },
+      ],
+    },
+  },
+  {
+    path: '/service-requests/:id/edit',
+    name: 'Edit Service Request',
+    component: ServiceRequestsEdit,
+    meta: {
+      permissions: [
+        {
+          resource: 'service-requests',
+          operation: 'update',
         },
       ],
     },
