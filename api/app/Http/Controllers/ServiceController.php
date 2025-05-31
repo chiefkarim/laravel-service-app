@@ -8,9 +8,15 @@ use Illuminate\Support\Facades\Gate;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Service::latest()->paginate(10);
+        $query = Service::latest();
+
+        if ($request->has('page')) {
+            return $query->paginate(10);
+        }
+
+        return $query->get();
     }
 
     public function show(Service $service)
