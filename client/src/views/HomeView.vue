@@ -1,92 +1,88 @@
 <template>
-  <div class="p-4 max-w-md mx-auto bg-white rounded shadow">
-    <h2 class="text-xl font-semibold mb-4">Create Service Request</h2>
+  <v-card class="mx-auto pa-4" max-width="500" elevation="3">
+    <v-card-title class="text-h6 font-weight-bold mb-4"> Create Service Request </v-card-title>
 
-    <form @submit.prevent="submit">
+    <v-form @submit.prevent="submit" ref="formRef">
       <!-- Email -->
-      <div class="mb-4">
-        <label for="email" class="block font-medium">Your Email</label>
-        <input
-          type="email"
-          v-model="form.email"
-          id="email"
-          class="w-full border px-3 py-2 rounded"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label for="name" class="block font-medium">Full Name</label>
-        <input
-          type="text"
-          v-model="form.name"
-          id="name"
-          class="w-full border px-3 py-2 rounded"
-          required
-        />
-      </div>
+      <v-text-field
+        v-model="form.email"
+        label="Your Email"
+        type="email"
+        autocomplete="email"
+        :rules="[rules.required, rules.email]"
+        required
+        class="mb-4"
+      />
+
+      <!-- Full Name -->
+      <v-text-field
+        v-model="form.name"
+        label="Full Name"
+        autocomplete="name"
+        :rules="[rules.required]"
+        required
+        class="mb-4"
+      />
+
       <!-- Service selection -->
-      <div class="mb-4">
-        <label for="service_id" class="block font-medium">Select a Service</label>
-        <select
-          v-model="form.service_id"
-          id="service_id"
-          class="w-full border px-3 py-2 rounded"
-          required
-        >
-          <option value="" disabled>Select a service</option>
-          <option v-for="service in services" :key="service.id" :value="service.id">
-            {{ service.name }}
-          </option>
-        </select>
-      </div>
+      <v-select
+        v-model="form.service_id"
+        :items="services"
+        item-title="name"
+        item-value="id"
+        label="Select a Service"
+        :rules="[rules.required]"
+        required
+        class="mb-4"
+      />
 
       <!-- Details -->
-      <div class="mb-4">
-        <label for="details" class="block font-medium">Details</label>
-        <textarea
-          v-model="form.details"
-          id="details"
-          class="w-full border px-3 py-2 rounded"
-          required
-        ></textarea>
-      </div>
+      <v-textarea
+        v-model="form.details"
+        label="Details"
+        rows="4"
+        :rules="[rules.required]"
+        required
+        class="mb-4"
+      />
 
       <!-- Submit button -->
-      <button
-        type="submit"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        :disabled="loading"
-      >
-        <span v-if="loading">Submitting...</span>
-        <span v-else>Submit</span>
-      </button>
-    </form>
+      <v-btn type="submit" :loading="loading" color="primary" class="mt-2" block> Submit </v-btn>
+    </v-form>
 
-    <!-- Feedback -->
-    <div v-if="error" class="mt-4 text-red-600">
+    <!-- Feedback messages -->
+    <v-alert v-if="error" type="error" class="mt-4" dense>
       {{ error }}
-    </div>
-    <div v-if="success" class="mt-4 text-green-600">Service request created successfully!</div>
-  </div>
+    </v-alert>
+    <v-alert v-if="success" type="success" class="mt-4" dense>
+      Service request created successfully!
+    </v-alert>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-// Reactive state
+const formRef = ref()
+
 const form = ref({
   email: '',
   service_id: '',
   details: '',
   name: '',
 })
+
 const services = ref([])
 const loading = ref(false)
 const error = ref(null)
 const success = ref(false)
 
-// Fetch services on mount
+const rules = {
+  required: (value: string) => !!value || 'Required field.',
+  email: (value: string) => /.+@.+\..+/.test(value) || 'Invalid email format.',
+}
+
 onMounted(async () => {
   try {
     const response = await axios.get('/api/services')
@@ -96,21 +92,23 @@ onMounted(async () => {
   }
 })
 
-// Form submission
 const submit = async () => {
-  loading.value = true
   error.value = null
   success.value = false
 
+  const isValid = await formRef.value.validate()
+  if (!isValid.valid) {
+    error.value = 'Please correct the highlighted fields.'
+    return
+  }
+
+  loading.value = true
+
   try {
-    await axios.post('/api/service-requests', {
-      email: form.value.email,
-      service_id: form.value.service_id,
-      details: form.value.details,
-      name: form.value.name,
-    })
+    await axios.post('/api/service-requests', form.value)
     success.value = true
-    form.value = { email: '', service_id: '', details: '' }
+    form.value = { email: '', service_id: '', details: '', name: '' }
+    formRef.value.reset()
   } catch (err) {
     error.value = err.response?.data?.message || 'An error occurred.'
   } finally {
