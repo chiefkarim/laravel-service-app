@@ -10,7 +10,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        return Service::all();
+        return Service::latest()->paginate(10);
     }
 
     public function show(Service $service)

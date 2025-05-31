@@ -50,17 +50,27 @@
 
       <div v-else-if="!loading" class="text-medium-emphasis">No services found.</div>
     </v-card>
+    <v-pagination
+      v-if="lastPage > 1"
+      v-model="currentPage"
+      :length="lastPage"
+      class="mt-4"
+      color="primary"
+    />
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useUserStore } from '@/stores/user' // chemin à adapter selon ton projet
 
 const services = ref([])
 const errors = ref([])
 const loading = ref(false)
+
+const currentPage = ref(1)
+const lastPage = ref(1)
 
 const userStore = useUserStore()
 const permissions = computed(() => userStore.permissions)
@@ -76,8 +86,11 @@ const fetchServices = async () => {
   loading.value = true
 
   try {
-    const response = await axios.get('/api/services')
-    services.value = response.data
+    const response = await axios.get('/api/services', {
+      params: { page: currentPage.value },
+    })
+    services.value = response.data.data
+    lastPage.value = response.data.last_page
   } catch (error) {
     if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
@@ -103,5 +116,8 @@ const deleteService = async (id: number) => {
 
 onMounted(async () => {
   await fetchServices()
+})
+watch(currentPage, () => {
+  fetchServices()
 })
 </script>

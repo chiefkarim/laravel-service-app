@@ -1,33 +1,38 @@
 <template>
-  <div class="max-w-md mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Create Service</h1>
+  <v-container class="pa-4" max-width="600">
+    <v-card elevation="0" class="pa-4">
+      <v-card-title class="text-h5 font-weight-bold pa-0 mb-4"> Create Service </v-card-title>
 
-    <form @submit.prevent="createService">
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Service Name</label>
-        <input
+      <v-form @submit.prevent="createService" ref="formRef">
+        <v-text-field
           v-model="form.name"
-          type="text"
-          class="w-full px-3 py-2 border rounded"
+          label="Service Name"
           placeholder="Enter service name"
+          outlined
+          dense
+          required
+          class="mb-4"
         />
-      </div>
 
-      <div v-if="errors.length" class="mb-4 text-red-600 text-sm">
-        <ul>
-          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-        </ul>
-      </div>
+        <v-alert
+          v-if="errors.length"
+          type="error"
+          class="mb-4"
+          border="start"
+          variant="tonal"
+          density="compact"
+        >
+          <ul class="ma-0 pa-0">
+            <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+          </ul>
+        </v-alert>
 
-      <button
-        type="submit"
-        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
-        :disabled="loading"
-      >
-        {{ loading ? 'Creating...' : 'Create Service' }}
-      </button>
-    </form>
-  </div>
+        <v-btn type="submit" color="green" class="w-full" :loading="loading" :disabled="loading">
+          {{ loading ? 'Creating...' : 'Create Service' }}
+        </v-btn>
+      </v-form>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -40,8 +45,9 @@ const form = ref({
   name: '',
 })
 
-const errors = ref([])
+const errors = ref<string[]>([])
 const loading = ref(false)
+const formRef = ref()
 
 const createService = async () => {
   errors.value = []
@@ -49,7 +55,6 @@ const createService = async () => {
 
   try {
     await axios.post('/api/services', form.value)
-
     router.push('/services')
   } catch (error) {
     if (error.response?.data?.errors) {
