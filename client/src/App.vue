@@ -51,7 +51,8 @@ const logout = async () => {
         <v-btn variant="text" v-for="route in readableRoutes" :key="route.path" :to="route.path">
           {{ route.name }}
         </v-btn>
-        <v-btn v-if="user.email" color="primary" variant="outlined" @click="logout"> Logout </v-btn>
+
+        <v-btn color="primary" variant="outlined" v-if="user.email" @click="logout"> Logout </v-btn>
       </v-toolbar>
     </v-card>
     <v-main class="flex justify-center items-center">

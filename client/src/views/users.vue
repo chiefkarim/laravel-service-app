@@ -1,101 +1,136 @@
 <template>
-  <div class="p-4 max-w-6xl mx-auto bg-white rounded shadow">
-    <h2 class="text-2xl font-bold mb-6">User Management</h2>
+  <v-container class="py-6">
+    <v-card class="mx-auto pa-6" max-width="960">
+      <v-card-title class="text-h5 font-weight-bold">User Management</v-card-title>
 
-    <!-- Add User Form -->
-    <div class="mb-6 border rounded p-4 space-y-2 bg-gray-50">
-      <h3 class="text-lg font-semibold">Add a User</h3>
-      <input v-model="newUser.name" placeholder="Name" class="border rounded px-3 py-1 w-full" />
-      <input v-model="newUser.email" placeholder="Email" class="border rounded px-3 py-1 w-full" />
-      <input
-        v-model="newUser.password"
-        placeholder="Password"
-        type="password"
-        class="border rounded px-3 py-1 w-full"
-      />
-      <input
-        v-model="newUser.password_confirmation"
-        placeholder="Confirm Password"
-        type="password"
-        class="border rounded px-3 py-1 w-full"
-      />
-      <button
-        @click="createUser"
-        class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
-      >
-        Add
-      </button>
-    </div>
+      <!-- Add User Form -->
+      <v-card class="pa-4 mb-6" variant="outlined" color="primary">
+        <v-card-title class="text-subtitle-1 font-weight-medium">Add a User</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newUser.name" label="Name" outlined dense />
+          <v-text-field v-model="newUser.email" label="Email" outlined dense />
+          <v-text-field
+            v-model="newUser.password"
+            label="Password"
+            type="password"
+            outlined
+            dense
+          />
+          <v-text-field
+            v-model="newUser.password_confirmation"
+            label="Confirm Password"
+            type="password"
+            outlined
+            dense
+          />
+          <v-btn color="primary" class="mt-3" @click="createUser">Add</v-btn>
+        </v-card-text>
 
-    <div v-if="loading" class="text-gray-600">Loading...</div>
-    <div v-else-if="error" class="text-red-600">{{ error }}</div>
+        <!-- Feedback messages -->
 
-    <!-- User List -->
-    <div v-else class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-      <div v-for="user in users" :key="user.id" class="border rounded p-4 shadow-sm">
-        <div class="flex justify-between items-center mb-2">
-          <div>
-            <p class="font-semibold">{{ user.name }}</p>
-            <p class="text-sm text-gray-600">{{ user.email }}</p>
-          </div>
-          <button class="text-red-600" @click="deleteUser(user.id)">Delete</button>
-        </div>
+        <v-alert v-if="createUserLoading" type="info" class="mb-4" dense> Loading ... </v-alert>
+        <v-alert v-if="createUserError" type="error" class="mt-4" dense>
+          {{ createUserError }}
+        </v-alert>
+        <v-alert v-if="createUserSuccess" type="success" class="mt-4" dense>
+          User added successfully!
+        </v-alert>
+      </v-card>
 
-        <!-- Permissions -->
-        <div class="space-y-1 mt-2">
-          <h4 class="font-medium text-sm">Permissions:</h4>
-          <div v-if="user.permissions.length === 0" class="text-sm text-gray-500">
-            No permissions
-          </div>
-          <div v-else class="flex flex-wrap gap-2">
-            <span
-              v-for="perm in user.permissions"
-              :key="perm.id"
-              class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded flex items-center gap-1"
-            >
-              {{ perm.resource }} -> {{ perm.operation }}
-              <button
-                @click="removePermission(user.id, perm.id)"
-                class="text-red-600 hover:text-red-800"
+      <!-- Loading/Error -->
+      <v-alert v-if="loading" type="info" text>Loading...</v-alert>
+      <v-alert v-else-if="error" type="error" text>{{ error }}</v-alert>
+
+      <!-- User List -->
+      <v-container v-else fluid class="pa-0">
+        <v-card v-for="user in users" :key="user.id" class="mb-4" outlined>
+          <v-card-title class="d-flex justify-space-between align-center">
+            <div>
+              <div class="font-weight-medium">{{ user.name }}</div>
+              <div class="text-caption text-grey">{{ user.email }}</div>
+            </div>
+            <v-btn icon @click="deleteUser(user.id)" color="error" variant="text">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <!-- Permissions Section -->
+          <v-card-text>
+            <div class="mb-2 font-weight-medium text-body-2">Permissions:</div>
+
+            <div v-if="user.permissions.length === 0" class="text-grey text-caption mb-2">
+              No permissions assigned.
+            </div>
+
+            <v-chip-group v-else column class="mb-3">
+              <v-chip
+                v-for="perm in user.permissions"
+                :key="perm.id"
+                closable
+                @click:close="removePermission(user.id, perm.id)"
+                color="blue-lighten-3"
+                text-color="blue-darken-3"
+                class="ma-1"
               >
-                ×
-              </button>
-            </span>
-          </div>
+                {{ perm.resource }} → {{ perm.operation }}
+              </v-chip>
+            </v-chip-group>
 
-          <!-- Add a permission -->
-          <div class="flex gap-2 mt-2 flex-wrap">
-            <input
-              v-model="resourceInput[user.id]"
-              placeholder="Resource (e.g.: articles)"
-              class="border rounded px-2 py-1 text-sm"
-            />
-            <select v-model="operationSelect[user.id]" class="border rounded px-2 py-1 text-sm">
-              <option value="">Operation</option>
-              <option value="create">Create</option>
-              <option value="read">Read</option>
-              <option value="update">Update</option>
-              <option value="delete">Delete</option>
-            </select>
-            <button
-              @click="addPermission(user.id)"
-              class="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 text-sm"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <!-- Add permission -->
+            <v-row dense>
+              <v-col cols="12" md="5">
+                <v-text-field
+                  v-model="resourceInput[user.id]"
+                  label="Resource (e.g. articles)"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-select
+                  v-model="operationSelect[user.id]"
+                  :items="['create', 'read', 'update', 'delete']"
+                  label="Operation"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col cols="12" md="2" class="d-flex align-center">
+                <v-btn size="small" @click="addPermission(user.id)">Add</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-container>
+    </v-card>
+  </v-container>
 </template>
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import {
+  VAlert,
+  VBtn,
+  VCard,
+  VCardText,
+  VCardTitle,
+  VChip,
+  VChipGroup,
+  VCol,
+  VContainer,
+  VIcon,
+  VRow,
+  VSelect,
+  VTextField,
+} from 'vuetify/components'
 
 const users = ref<any[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+const createUserError = ref<string | null>(null)
+const createUserLoading = ref(false)
+const createUserSuccess = ref<null | boolean>(null)
 
 const newUser = ref({
   name: '',
@@ -104,7 +139,6 @@ const newUser = ref({
   password_confirmation: '',
 })
 
-// Pour gérer les inputs par utilisateur
 const resourceInput = ref<Record<number, string>>({})
 const operationSelect = ref<Record<number, string>>({})
 
@@ -116,10 +150,9 @@ const fetchUsers = async () => {
   loading.value = true
   try {
     const res = await axios.get('/api/users')
-    await axios.get('/api/users/1')
     users.value = res.data
   } catch (err) {
-    error.value = 'Erreur lors du chargement des utilisateurs.'
+    error.value = 'Failed to load users.'
   } finally {
     loading.value = false
   }
@@ -127,21 +160,30 @@ const fetchUsers = async () => {
 
 const createUser = async () => {
   try {
+    createUserLoading.value = true
+    createUserError.value = null
     const res = await axios.post('/api/users', newUser.value)
     users.value.push(res.data)
     newUser.value = { name: '', email: '', password: '', password_confirmation: '' }
+    createUserSuccess.value = true
+
+    await fetchUsers()
   } catch (err: any) {
-    alert(err.response?.data?.message || 'Erreur lors de la création.')
+    createUserLoading.value = false
+    createUserError.value = err.response.data.message
+  } finally {
+    createUserLoading.value = false
   }
 }
+//TODO:: update permissions in the store when changed
 
 const deleteUser = async (id: number) => {
-  if (!confirm('Supprimer cet utilisateur ?')) return
+  if (!confirm('Are you sure you want to delete this user?')) return
   try {
     await axios.delete(`/api/users/${id}`)
     users.value = users.value.filter((u) => u.id !== id)
   } catch {
-    alert('Erreur lors de la suppression.')
+    alert('Error deleting user.')
   }
 }
 
@@ -149,7 +191,7 @@ const addPermission = async (userId: number) => {
   const resource = resourceInput.value[userId]
   const operation = operationSelect.value[userId]
   if (!resource || !operation) {
-    alert('Ressource et opération sont obligatoires.')
+    alert('Both resource and operation are required.')
     return
   }
 
@@ -160,7 +202,7 @@ const addPermission = async (userId: number) => {
     operationSelect.value[userId] = ''
   } catch (err) {
     console.error(err)
-    alert('Erreur lors de l’ajout.')
+    alert('Error adding permission.')
   }
 }
 
@@ -169,7 +211,7 @@ const removePermission = async (userId: number, permId: number) => {
     await axios.delete(`/api/permissions/${permId}`)
     await fetchUsers()
   } catch {
-    alert('Erreur lors de la suppression.')
+    alert('Error removing permission.')
   }
 }
 </script>
