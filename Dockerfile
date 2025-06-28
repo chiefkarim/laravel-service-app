@@ -12,6 +12,7 @@ WORKDIR /app/api
 COPY api/composer.json api/composer.lock ./
 RUN composer install --no-dev --no-scripts
 COPY api/ ./
+RUN touch database/database.sqlite &&     chmod 664 database/database.sqlite
 RUN composer dump-autoload --no-dev --optimize
 
 # Final stage
