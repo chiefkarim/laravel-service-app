@@ -9,11 +9,10 @@ RUN pnpm run build
 # Backend build stage
 FROM composer:2 AS backend
 WORKDIR /app/api
-COPY api/composer.json api/composer.lock ./
-RUN composer install
 COPY api/ ./
+RUN composer install
 RUN touch database/database.sqlite &&     chmod 664 database/database.sqlite
-RUN composer dump-autoload --no-dev --optimize
+
 
 # Final stage
 FROM php:8.2-fpm-alpine AS final
