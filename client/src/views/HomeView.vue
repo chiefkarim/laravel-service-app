@@ -71,18 +71,18 @@ const formRef = ref()
 
 const form = ref({
   email: '',
-  service_id: '',
+  service_id: null,
   details: '',
   name: '',
 })
 
 const services = ref([])
 const loading = ref(false)
-const error = ref(null)
+const error = ref<string | null>(null)
 const success = ref(false)
 
 const rules = {
-  required: (value: string) => !!value || 'Required field.',
+  required: (value: any) => !!value || 'Required field.',
   email: (value: string) => /.+@.+\..+/.test(value) || 'Invalid email format.',
 }
 
@@ -93,7 +93,7 @@ onMounted(async () => {
     const response = await axios.get('/api/services')
     services.value = response.data
     loading.value = false
-  } catch (err) {
+  } catch (err: any) {
     error.value = 'Failed to load services.'
     loading.value = false
   }
@@ -114,8 +114,8 @@ const submit = async () => {
   try {
     await axios.post('/api/service-requests', form.value)
     success.value = true
-    form.value = { email: '', service_id: '', details: '', name: '' }
-  } catch (err) {
+    form.value = { email: '', service_id: null, details: '', name: '' }
+  } catch (err: any) {
     error.value = err.response?.data?.message || 'An error occurred.'
   } finally {
     loading.value = false

@@ -55,7 +55,7 @@ onMounted(async () => {
     const { data } = await axios.get(`/api/service-requests/${id}`)
     request.value = data
     replyText.value = data.reply || ''
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.response?.data?.message || 'Failed to fetch service request.'
   } finally {
     loading.value = false
@@ -66,7 +66,7 @@ const updateServiceRequest = async (id: number, payload: { status?: string; repl
   try {
     const { data } = await axios.put(`/api/service-requests/${id}`, payload)
     request.value = data
-  } catch (err) {
+  } catch (err: any) {
     alert('Failed to update service request.')
   }
 }

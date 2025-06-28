@@ -55,7 +55,7 @@ const form = ref({
   password_confirmation: '',
 })
 
-const errors = ref([])
+const errors = ref<string[]>([])
 const loading = ref(false)
 
 const register = async () => {
@@ -68,10 +68,10 @@ const register = async () => {
       .then(async () => await axios.post('/register', form.value))
     //TODO: switch user feedback with toast messages
     alert('Registration successful!')
-  } catch (error) {
+  } catch (error: any) {
     if (error.response && error.response.data.errors) {
       const serverErrors = error.response.data.errors
-      errors.value = Object.values(serverErrors).flat()
+      errors.value = Object.values(serverErrors).flat().map((e: any) => String(e))
     } else {
       errors.value = ['An unexpected error occurred.']
     }

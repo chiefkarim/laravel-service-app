@@ -56,9 +56,9 @@ const createService = async () => {
   try {
     await axios.post('/api/services', form.value)
     router.push('/services')
-  } catch (error) {
+  } catch (error: any) {
     if (error.response?.data?.errors) {
-      errors.value = Object.values(error.response.data.errors).flat()
+      errors.value = Object.values(error.response.data.errors).flat().map((e: any) => String(e))
     } else if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
     } else {

@@ -65,8 +65,15 @@ import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useUserStore } from '@/stores/user' // chemin à adapter selon ton projet
 
-const services = ref([])
-const errors = ref([])
+interface Service {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const services = ref<Service[]>([])
+const errors = ref<string[]>([])
 const loading = ref(false)
 
 const currentPage = ref(1)
@@ -91,7 +98,7 @@ const fetchServices = async () => {
     })
     services.value = response.data.data
     lastPage.value = response.data.last_page
-  } catch (error) {
+  } catch (error: any) {
     if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
     } else {
@@ -108,7 +115,7 @@ const deleteService = async (id: number) => {
   try {
     await axios.delete(`/api/services/${id}`)
     services.value = services.value.filter((service) => service.id !== id)
-  } catch (error) {
+  } catch (error: any) {
     alert('Failed to delete service.')
     console.error(error)
   }

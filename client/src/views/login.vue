@@ -76,7 +76,7 @@ const login = async () => {
   } catch (error: any) {
     if (error.response?.data?.errors) {
       const serverErrors = error.response.data.errors
-      errors.value = Object.values(serverErrors).flat()
+      errors.value = Object.values(serverErrors).flat().map((e: any) => String(e))
     } else if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
     } else {

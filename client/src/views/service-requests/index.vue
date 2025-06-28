@@ -110,7 +110,25 @@ import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useUserStore } from '../../stores/user.ts'
 
-const requests = ref([])
+interface Service {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ServiceRequest {
+  id: number;
+  service: Service;
+  email: string;
+  name: string;
+  details: string;
+  status: string;
+  created_at: string;
+  reply: string | null;
+}
+
+const requests = ref<ServiceRequest[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
@@ -144,7 +162,7 @@ const fetchRequests = async () => {
     })
     requests.value = response.data.data
     lastPage.value = response.data.last_page
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.response?.data?.message || 'Failed to load service requests.'
   } finally {
     loading.value = false
@@ -158,7 +176,7 @@ const updateServiceRequest = async (id: number, payload: { status?: string; repl
     const updated = response.data
     const index = requests.value.findIndex((r) => r.id === id)
     if (index !== -1) requests.value[index] = updated
-  } catch (err) {
+  } catch (err: any) {
     alert('Failed to update service request.')
   }
 }

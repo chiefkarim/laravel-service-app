@@ -28,18 +28,14 @@
 
         <!-- Feedback messages -->
 
-        <v-alert v-if="createUserLoading" type="info" class="mb-4" dense> Loading ... </v-alert>
-        <v-alert v-if="createUserError" type="error" class="mt-4" dense>
-          {{ createUserError }}
-        </v-alert>
-        <v-alert v-if="createUserSuccess" type="success" class="mt-4" dense>
-          User added successfully!
-        </v-alert>
+        <v-alert v-if="createUserLoading" type="info" class="mb-4" dense text="Loading ..."></v-alert>
+        <v-alert v-if="createUserError" type="error" class="mt-4" dense :text="createUserError"></v-alert>
+        <v-alert v-if="createUserSuccess" type="success" class="mt-4" dense text="User added successfully!"></v-alert>
       </v-card>
 
       <!-- Loading/Error -->
-      <v-alert v-if="loading" type="info" text>Loading...</v-alert>
-      <v-alert v-else-if="error" type="error" text>{{ error }}</v-alert>
+      <v-alert v-if="loading" type="info" :text="loading ? 'Loading...' : ''"></v-alert>
+      <v-alert v-else-if="error" type="error" :text="error"></v-alert>
 
       <!-- User List -->
       <v-container v-else fluid class="pa-0">
