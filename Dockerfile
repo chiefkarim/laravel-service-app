@@ -31,7 +31,7 @@ COPY --from=frontend /app/client/dist /var/www/html/public
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html &&     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Optimize Laravel
 
