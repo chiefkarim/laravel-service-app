@@ -34,12 +34,11 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html
 
 # Optimize Laravel
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
 
 # Expose port 80
 EXPOSE 80
 
 # Start services
-CMD ["/bin/sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+COPY run.sh /usr/local/bin/run.sh
+RUN chmod +x /usr/local/bin/run.sh
+CMD ["run.sh"]
