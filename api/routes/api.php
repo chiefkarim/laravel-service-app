@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__ . '/health.php';
+
 Route::get('/user', function (Request $request) {
     $user = $request->user()->load('permissions');
 

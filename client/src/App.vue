@@ -33,6 +33,7 @@ const readableRoutes = computed(() => {
 
 const logout = async () => {
   try {
+    localStorage.clear()
     await axios.post('/logout', { id: user.value.id })
     window.location.href = '/'
   } catch (err) {
