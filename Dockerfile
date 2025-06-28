@@ -1,4 +1,3 @@
-
 # Frontend build stage
 FROM node:22-alpine AS frontend
 WORKDIR /app/client
@@ -28,8 +27,16 @@ COPY --from=backend /app/api /var/www/html
 # Copy frontend files
 COPY --from=frontend /app/client/dist /var/www/html/public
 
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
+
+# Optimize Laravel
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
 # Expose port 80
 EXPOSE 80
