@@ -48,9 +48,9 @@ await axios
       wssPort: import.meta.env.VITE_REVERB_PORT,
       forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
       enabledTransports: ['ws', 'wss'],
-      authorizer: (channel, options) => {
+      authorizer: (channel: { name: string }, options: any) => {
         return {
-          authorize: (socketId, callback) => {
+          authorize: (socketId: string, callback: (error: boolean, data?: any) => void) => {
             axios
               .post('/broadcasting/auth', {
                 socket_id: socketId,

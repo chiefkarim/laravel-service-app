@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { useUserStore } from './stores/user'
+import { useUserStore, type Notification } from './stores/user'
 import { computed, ref } from 'vue'
 import axios from 'axios'
 import { routes } from './router/index.ts'
@@ -12,7 +12,7 @@ const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const userPermissions = computed(() => user.value?.permissions || [])
 
-useEcho(`service-requests`, '.new-request', (e) => {
+useEcho(`service-requests`, '.new-request', (e: Notification) => {
   userStore.addNotification(e) // on suppose que `e.request` contient les infos utiles
 })
 
