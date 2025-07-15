@@ -6,6 +6,7 @@ php artisan migrate --force
 php artisan storage:link
 
 # Clear and cache Laravel configurations
+php artisan optimize:clear
 php artisan config:clear
 php artisan cache:clear
 php artisan route:cache

@@ -40,15 +40,13 @@ class ServiceRequestController extends Controller
         ]);
 
         $serviceRequest = ServiceRequest::create([
-            'email' => $request->email,
             'name' => $request->name,
             'service_id' => $request->service_id,
+            'email' => $request->email,
             'details' => $request->details,
         ]);
-
         $serviceRequest->load('service');
 
-        // boradcast the evnet
         NewRequest::dispatch($serviceRequest);
 
         Mail::to($request->email)->queue(
