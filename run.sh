@@ -4,7 +4,6 @@ set -e
 # Run Laravel optimizations and essential commands
 php artisan storage:link
 php artisan migrate --force
-php artisan db:seed --force
 
 # Clear and cache Laravel configurations
 php artisan optimize:clear

@@ -45,6 +45,7 @@ class ServiceRequestController extends Controller
             'email' => $request->email,
             'details' => $request->details,
         ]);
+
         $serviceRequest->load('service');
 
         NewRequest::dispatch($serviceRequest);
