@@ -19,7 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:5173', 'http://127.0.0.1:5173', 'https://laravel-service-app.onrender.com', 'https://laravel-service-app.vercel.app'))),
+    'allowed_origins' => ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://laravel-service-app.onrender.com', 'https://laravel-service-app.vercel.app'],
+
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
