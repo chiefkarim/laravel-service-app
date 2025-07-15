@@ -11,6 +11,7 @@ FROM composer:2 AS backend
 WORKDIR /app/api
 COPY api/ ./
 RUN composer install
+RUN touch database/database.sqlite &&     chmod 664 database/database.sqlite
 
 
 # Final stage
