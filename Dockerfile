@@ -19,7 +19,9 @@ FROM php:8.2-fpm-alpine AS final
 WORKDIR /var/www/html
 
 # Install dependencies
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx supervisor
+RUN apk add --no-cache libzip-dev zip unzip pdo pdo_mysql bcmath sockets
+RUN docker-php-ext-install pdo pdo_mysql zip bcmath sockets
 
 # Copy backend files
 COPY --from=backend /app/api /var/www/html
@@ -34,11 +36,16 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html &&     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Optimize Laravel
+RUN php artisan config:cache && 
+    php artisan route:cache && 
+    php artisan view:cache
 
-# Expose port 80
+# Copy supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose ports
 EXPOSE 80
+EXPOSE 8080
 
-# Start services
-COPY run.sh /usr/local/bin/run.sh
-RUN chmod +x /usr/local/bin/run.sh
-CMD ["run.sh"]
+# Start services using supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
