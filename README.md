@@ -1,11 +1,14 @@
+# Live preview
+
+[Front-end](https://service.karimmenna.com)
+[Back-end](https://api.karimmenna.com)
+[🎥 Google Drive preview](https://drive.google.com/file/d/1GvXdg_7ZyRuLIsHN1SLxTdG9xBrHK5GE/view?usp=sharing)
 
 # 🚀 Development Setup
 
 You can quickly get started using the provided setup and run scripts.  
 Manual steps are also available below if you prefer doing it step by step.
 [🎥 Google Drive preview](https://drive.google.com/file/d/1GvXdg_7ZyRuLIsHN1SLxTdG9xBrHK5GE/view?usp=sharing)
-
-
 
 ---
 
