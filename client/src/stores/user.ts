@@ -21,7 +21,7 @@ export const useUserStore = defineStore(
     const role = ref('')
     const permissions = ref<Permission[]>([])
     const notifications = ref<Notification[]>([])
-
+    const loadingUser = ref(true)
     // getters
     const isAdmin = computed(() => ['admin', 'super-admin'].includes(role.value))
     const isLoggedIn = computed(() => !!id.value)
@@ -57,6 +57,9 @@ export const useUserStore = defineStore(
       notifications.value = []
     }
 
+    function setLoadingUser(value: boolean) {
+      loadingUser.value = value
+    }
     function addNotification(notification: Notification) {
       notifications.value.unshift(notification)
     }
@@ -73,6 +76,8 @@ export const useUserStore = defineStore(
       id,
       email,
       role,
+      loadingUser,
+      setLoadingUser,
       permissions,
       notifications,
       isAdmin,

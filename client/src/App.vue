@@ -5,13 +5,14 @@ import { computed, ref } from 'vue'
 import axios from 'axios'
 import { routes } from './router/index.ts'
 import { canRead } from './lib/utils'
+import { storeToRefs } from 'pinia'
 
 import { useEcho } from '@laravel/echo-vue'
 const menu = ref(false) // pour afficher/masquer le menu
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 const userPermissions = computed(() => user.value?.permissions || [])
-
+const { loadingUser } = storeToRefs(userStore)
 useEcho(`service-requests`, '.new-request', (e: Notification) => {
   userStore.addNotification(e) // on suppose que `e.request` contient les infos utiles
 })
@@ -42,7 +43,11 @@ const logout = async () => {
 }
 </script>
 <template>
-  <v-app>
+  <div v-if="loadingUser === true" class="loading-screen">
+    This website is hosted on render free tier. and would need some time for the server to run,
+    thank you for your patience...
+  </div>
+  <v-app v-if="loadingUser === false">
     <v-card>
       <v-toolbar extended>
         <v-toolbar-title text="Service Requests"></v-toolbar-title>
@@ -108,3 +113,14 @@ const logout = async () => {
     </v-main>
   </v-app>
 </template>
+
+<style>
+.loading-screen {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+</style>

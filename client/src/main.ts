@@ -1,8 +1,6 @@
 import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
-
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
@@ -18,13 +16,13 @@ axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
 const pinia = createPinia()
-const app = createApp(App)
 pinia.use(piniaPluginPersistedstate)
-app.use(pinia)
 
+const app = createApp(App)
+app.use(pinia)
+const userStore = useUserStore()
 const vuetify = createVuetify()
 app.use(vuetify)
-const userStore = useUserStore()
 
 await axios
   .get('/api/user')
@@ -40,6 +38,7 @@ await axios
     console.error('Failed to fetch user', err)
   })
   .finally(() => {
+    userStore.setLoadingUser(false) // 👈 on cache le loader
     configureEcho({
       broadcaster: 'reverb',
       key: import.meta.env.VITE_REVERB_APP_KEY,
@@ -56,16 +55,13 @@ await axios
                 socket_id: socketId,
                 channel_name: channel.name,
               })
-              .then((response) => {
-                callback(false, response.data)
-              })
-              .catch((error) => {
-                callback(true, error.response)
-              })
+              .then((response) => callback(false, response.data))
+              .catch((error) => callback(true, error.response))
           },
         }
       },
     })
+
     app.use(router)
     app.mount('#app')
   })
