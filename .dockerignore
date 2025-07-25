@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Environments
+.env
+**/.env
+**/.env.prod
+**/.env.local
+
+# Dependencies
+**/node_modules
+**/vendor
