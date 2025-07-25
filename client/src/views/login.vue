@@ -91,6 +91,7 @@ const login = async () => {
 }
 
 const loginWithGoogle = () => {
+  console.info('base url', import.meta.env.VITE_API_BASE_URL + '/auth/redirect')
   window.location.href = import.meta.env.VITE_API_BASE_URL + '/auth/redirect'
 }
 </script>
