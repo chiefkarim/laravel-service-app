@@ -91,6 +91,6 @@ const login = async () => {
 }
 
 const loginWithGoogle = () => {
-  window.location.href = 'http://localhost:8000/auth/redirect'
+  window.location.href = import.meta.env.VITE_API_BASE_URL + '/auth/redirect'
 }
 </script>
