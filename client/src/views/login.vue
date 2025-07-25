@@ -34,6 +34,7 @@
 
         <!-- Submit button -->
         <v-btn type="submit" :loading="loading" color="primary" block class="mt-2"> Login </v-btn>
+        <v-btn @click="loginWithGoogle" color="red" block class="mt-2"> Login with Google </v-btn>
       </v-form>
     </v-card>
   </v-container>
@@ -76,7 +77,9 @@ const login = async () => {
   } catch (error: any) {
     if (error.response?.data?.errors) {
       const serverErrors = error.response.data.errors
-      errors.value = Object.values(serverErrors).flat().map((e: any) => String(e))
+      errors.value = Object.values(serverErrors)
+        .flat()
+        .map((e: any) => String(e))
     } else if (error.response?.data?.message) {
       errors.value = [error.response.data.message]
     } else {
@@ -85,5 +88,9 @@ const login = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const loginWithGoogle = () => {
+  window.location.href = 'http://localhost:8000/auth/redirect'
 }
 </script>

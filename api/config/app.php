@@ -65,6 +65,8 @@ return [
     |
     */
 
+    'frontend' => env('VITE_APP_URL', 'http://localhost:5173'),
+
     'timezone' => 'UTC',
 
     /*

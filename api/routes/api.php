@@ -5,9 +5,13 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
-require __DIR__ . '/health.php';
+require __DIR__.'/health.php';
 
 Route::get('/user', function (Request $request) {
     $user = $request->user()->load('permissions');

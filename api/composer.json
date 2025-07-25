@@ -14,6 +14,7 @@
         "laravel/framework": "^12.0",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "laravel/vapor-core": "^2.38"
     },
@@ -56,7 +57,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan reverb:start\" \"php artisan queue:listen --tries=1\" \"php artisan sail --timeout=0\"  --names=server,queue,logs"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan reverb:start\" \"php artisan queue:listen --tries=1\" \"php artisan pail\"  --names=server,queue,logs"
         ],
         "test": [
             "@php artisan config:clear --ansi",
@@ -65,9 +66,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-                "laravel/pail"
-            ]
+            "dont-discover": []
         }
     },
     "config": {
