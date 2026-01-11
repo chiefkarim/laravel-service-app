@@ -1,0 +1,33 @@
+name: Build, test and deploy
+
+on:
+  push:
+    branches: [main]
+# add another one on commit to test email works
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+
+    - name: Create sqlite database
+      run: touch ./api/database/database.sqlite
+
+    - name: Copy .env.test
+      run: cp .env.test ./api/.env
+
+    - name: Setup project
+      working-directory: api
+      run: composer install && php artisan migrate && php artisan seed
+
+    - name: PhpStan test
+      run: ./api/vendor/bin/phpstan analyse
+
+    - name: PhpUnite test
+      run: ./api/vendor/bin/phpunit
