@@ -27,7 +27,8 @@ jobs:
         run: composer install && php artisan migrate && php artisan db:seed
 
       - name: PhpStan test
-        run: ./api/vendor/bin/phpstan analyse
+        working-directory: ./api
+        run: ./vendor/bin/phpstan analyse
 
       - name: PhpUnite test
         run: ./api/vendor/bin/phpunit
