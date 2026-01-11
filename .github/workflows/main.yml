@@ -24,7 +24,7 @@ jobs:
 
       - name: Setup project
         working-directory: api
-        run: composer install && php artisan migrate && php artisan seed
+        run: composer install && php artisan migrate && php artisan db:seed
 
       - name: PhpStan test
         run: ./api/vendor/bin/phpstan analyse
