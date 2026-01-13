@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: laravel-service-app
-    env: docker
-    dockerfilePath: ./Dockerfile
-    plan: free
-    healthCheckPath: /api/health
