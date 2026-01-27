@@ -32,3 +32,5 @@ jobs:
 
       - name: PhpUnite test
         run: ./api/vendor/bin/phpunit
+
+# run migration command on each deploy

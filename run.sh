@@ -1,17 +1,15 @@
 #!/bin/sh
 set -e
+cd /var/www/html/laravel
 
-# Run Laravel optimizations and essential commands
+chown -R www-data:www-data database storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+chmod 664 database/database.sqlite
+php artisan storage:link || true
 php artisan migrate --force
-php artisan storage:link
 
 # Clear and cache Laravel configurations
 php artisan optimize:clear
-php artisan config:clear
-php artisan cache:clear
-php artisan route:cache
-php artisan view:cache
-php artisan config:cache
+php artisan optimize
 
-# Start supervisor
-supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec supervisord -n -c /etc/supervisor/conf.d/supervisord.conf

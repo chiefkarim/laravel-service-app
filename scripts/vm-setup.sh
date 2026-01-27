@@ -69,13 +69,6 @@ sudo sed -i 's/^#PasswordAuthentication.*/PasswordAuthentication no/' "$SSHD_CON
 sudo sed -i 's/^#PubkeyAuthentication.*/PubkeyAuthentication yes/' "$SSHD_CONFIG"
 sudo systemctl restart ssh
 
-sudo mkdir -p /opt/laravel
-sudo mkdir /opt/laravel/storage
-sudo mkdir /opt/laravel/logs
-
-# change the user
-sudo chown -R $USERNAME:$USERNAME /opt/laravel
-
-sudo touch /opt/laravel/.env
-# put your environment variables here
-echo 'EXAMPLE="something"' >/opt/laravel/.env
+sudo docker volume create laravel-sqlite3
+sudo docker volume create laravel-storage
+sudo docker volume create laravel-supervisord
