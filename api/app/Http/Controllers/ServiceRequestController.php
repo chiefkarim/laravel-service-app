@@ -10,8 +10,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * @group Service Requests
+ * APIs for managing service requests.
+ */
 class ServiceRequestController extends Controller
 {
+    /**
+     * List service requests.
+     */
     public function index()
     {
 
@@ -21,6 +28,9 @@ class ServiceRequestController extends Controller
 
     }
 
+    /**
+     * Show a service request.
+     */
     public function show(ServiceRequest $serviceRequest)
     {
 
@@ -30,6 +40,11 @@ class ServiceRequestController extends Controller
 
     }
 
+    /**
+     * Create a service request.
+     *
+     * @unauthenticated
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -57,6 +72,9 @@ class ServiceRequestController extends Controller
         return response()->json($serviceRequest->load(['service']), 201);
     }
 
+    /**
+     * Update a service request.
+     */
     public function update(Request $request, ServiceRequest $serviceRequest)
     {
         Gate::authorize('has-permission', ['resource' => 'service-requests', 'operation' => 'update']);
@@ -75,6 +93,9 @@ class ServiceRequestController extends Controller
         return response()->json($serviceRequest->load(['service']), 200);
     }
 
+    /**
+     * Delete a service request.
+     */
     public function destroy(ServiceRequest $serviceRequest)
     {
 

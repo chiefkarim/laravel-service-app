@@ -1,0 +1,768 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Laravel API Documentation",
+        "description": "",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Health",
+            "description": "Health check endpoints."
+        },
+        {
+            "name": "Permissions",
+            "description": "APIs for managing permissions."
+        },
+        {
+            "name": "Service Requests",
+            "description": "APIs for managing service requests."
+        },
+        {
+            "name": "Services",
+            "description": "APIs for managing services."
+        },
+        {
+            "name": "Users",
+            "description": "APIs for managing users."
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "default": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": ""
+            }
+        }
+    },
+    "security": [
+        {
+            "default": []
+        }
+    ],
+    "paths": {
+        "/api/health": {
+            "get": {
+                "summary": "Check API health.",
+                "operationId": "checkAPIHealth",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "status": "ok"
+                                    },
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Health"
+                ],
+                "security": []
+            }
+        },
+        "/api/permissions": {
+            "get": {
+                "summary": "List permissions.",
+                "operationId": "listPermissions",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Permissions"
+                ]
+            },
+            "post": {
+                "summary": "Create a permission.",
+                "operationId": "createAPermission",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Permissions"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string",
+                                        "description": "The <code>id</code> of an existing record in the users table.",
+                                        "example": "architecto"
+                                    },
+                                    "resource": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    },
+                                    "operation": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    }
+                                },
+                                "required": [
+                                    "user_id",
+                                    "resource",
+                                    "operation"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/permissions/{id}": {
+            "get": {
+                "summary": "Show a permission.",
+                "operationId": "showAPermission",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Permissions"
+                ]
+            },
+            "delete": {
+                "summary": "Delete a permission.",
+                "operationId": "deleteAPermission",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Permissions"
+                ]
+            },
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "description": "The ID of the permission.",
+                    "example": 1,
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ]
+        },
+        "/api/service-requests": {
+            "get": {
+                "summary": "List service requests.",
+                "operationId": "listServiceRequests",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Service Requests"
+                ]
+            },
+            "post": {
+                "summary": "Create a service request.",
+                "operationId": "createAServiceRequest",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Service Requests"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Must be a valid email address.",
+                                        "example": "gbailey@example.net"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    },
+                                    "service_id": {
+                                        "type": "string",
+                                        "description": "The <code>id</code> of an existing record in the services table.",
+                                        "example": "architecto"
+                                    },
+                                    "details": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "name",
+                                    "service_id",
+                                    "details"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/service-requests/{id}": {
+            "get": {
+                "summary": "Show a service request.",
+                "operationId": "showAServiceRequest",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Service Requests"
+                ]
+            },
+            "put": {
+                "summary": "Update a service request.",
+                "operationId": "updateAServiceRequest",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Service Requests"
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "declined",
+                                        "enum": [
+                                            "pending",
+                                            "approved",
+                                            "declined"
+                                        ]
+                                    },
+                                    "reply": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto",
+                                        "nullable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a service request.",
+                "operationId": "deleteAServiceRequest",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Service Requests"
+                ]
+            },
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "description": "The ID of the service request.",
+                    "example": 1,
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ]
+        },
+        "/api/services": {
+            "post": {
+                "summary": "Create a service.",
+                "operationId": "createAService",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Services"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "List services.",
+                "operationId": "listServices",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Web Development"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "example": "2026-01-11T14:00:28.000000Z"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "example": "2026-01-11T14:00:28.000000Z"
+                                            }
+                                        }
+                                    },
+                                    "example": [
+                                        {
+                                            "id": 1,
+                                            "name": "Web Development",
+                                            "created_at": "2026-01-11T14:00:28.000000Z",
+                                            "updated_at": "2026-01-11T14:00:28.000000Z"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "name": "Mobile App Development",
+                                            "created_at": "2026-01-11T14:00:28.000000Z",
+                                            "updated_at": "2026-01-11T14:00:28.000000Z"
+                                        },
+                                        {
+                                            "id": 3,
+                                            "name": "UI/UX Design",
+                                            "created_at": "2026-01-11T14:00:28.000000Z",
+                                            "updated_at": "2026-01-11T14:00:28.000000Z"
+                                        },
+                                        {
+                                            "id": 4,
+                                            "name": "Digital Marketing",
+                                            "created_at": "2026-01-11T14:00:28.000000Z",
+                                            "updated_at": "2026-01-11T14:00:28.000000Z"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Services"
+                ],
+                "security": []
+            }
+        },
+        "/api/services/{id}": {
+            "get": {
+                "summary": "Show a service.",
+                "operationId": "showAService",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Services"
+                ]
+            },
+            "put": {
+                "summary": "Update a service.",
+                "operationId": "updateAService",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Services"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a service.",
+                "operationId": "deleteAService",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Services"
+                ]
+            },
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "description": "The ID of the service.",
+                    "example": 1,
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ]
+        },
+        "/api/user": {
+            "get": {
+                "summary": "Get the current authenticated user.",
+                "operationId": "getTheCurrentAuthenticatedUser",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            }
+        },
+        "/api/users": {
+            "get": {
+                "summary": "List users.",
+                "operationId": "listUsers",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "post": {
+                "summary": "Create a user.",
+                "operationId": "createAUser",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Must not be greater than 255 characters.",
+                                        "example": "b"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Must be a valid email address.",
+                                        "example": "zbailey@example.net"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": "architecto"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "summary": "Show a user.",
+                "operationId": "showAUser",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthenticated."
+                                    },
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "put": {
+                "summary": "Update a user.",
+                "operationId": "updateAUser",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Must not be greater than 255 characters.",
+                                        "example": "b"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": null
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "",
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a user.",
+                "operationId": "deleteAUser",
+                "description": "",
+                "parameters": [],
+                "responses": [],
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "description": "The ID of the user.",
+                    "example": 1,
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ]
+        }
+    }
+}

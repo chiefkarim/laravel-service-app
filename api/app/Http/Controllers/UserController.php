@@ -9,8 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * @group Users
+ * APIs for managing users.
+ */
 class UserController extends Controller
 {
+
+    /**
+     * List users.
+     */
     // Lister tous les utilisateurs
     public function index()
     {
@@ -22,6 +30,9 @@ class UserController extends Controller
     }
 
     // Afficher un utilisateur spécifique
+    /**
+     * Show a user.
+     */
     public function show(User $user)
     {
         Gate::authorize('has-permission', ['users', 'read']);
@@ -32,6 +43,9 @@ class UserController extends Controller
     }
 
     // Créer un utilisateur
+    /**
+     * Create a user.
+     */
     public function store(Request $request)
     {
 
@@ -47,6 +61,9 @@ class UserController extends Controller
     }
 
     // Mettre à jour un utilisateur
+    /**
+     * Update a user.
+     */
     public function update(Request $request, User $user)
     {
         Gate::authorize('has-permission', ['users', 'update']);
@@ -63,6 +80,9 @@ class UserController extends Controller
     }
 
     // Supprimer un utilisateur
+    /**
+     * Delete a user.
+     */
     public function destroy(User $user)
     {
         Gate::authorize('has-permission', ['users', 'delete']);

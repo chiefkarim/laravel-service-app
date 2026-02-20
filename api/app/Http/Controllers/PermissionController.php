@@ -6,8 +6,15 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @group Permissions
+ * APIs for managing permissions.
+ */
 class PermissionController extends Controller
 {
+    /**
+     * List permissions.
+     */
     public function index()
     {
 
@@ -16,6 +23,9 @@ class PermissionController extends Controller
         return Permission::all();
     }
 
+    /**
+     * Show a permission.
+     */
     public function show(Permission $permission)
     {
         Gate::authorize('has-permission', ['permissions', 'read']);
@@ -23,6 +33,9 @@ class PermissionController extends Controller
         return $permission;
     }
 
+    /**
+     * Create a permission.
+     */
     public function store(Request $request)
     {
 
@@ -44,6 +57,9 @@ class PermissionController extends Controller
         return response()->json($permission, 201);
     }
 
+    /**
+     * Delete a permission.
+     */
     public function destroy(Permission $permission)
     {
 
